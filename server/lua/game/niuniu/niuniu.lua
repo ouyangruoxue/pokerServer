@@ -323,7 +323,7 @@ function _NNPoker.jugeCards(cards1,cards2)
 		end
 	end
 end
-
+--[[
 local testCards = { 
 	 {cardId = Poker.CardIDType.Ace,    cardValue = Poker.CardValues.Ace,      cardSuit = Poker.SuitType.Diamons , IsUsed = 0},
      {cardId = Poker.CardIDType.Nine,   cardValue = Poker.CardValues.Nine,     cardSuit = Poker.SuitType.Spades , IsUsed = 0},
@@ -408,7 +408,7 @@ local testCards2xx1niu = {
      {cardId = Poker.CardIDType.Five,    cardValue = Poker.CardValues.Five,      cardSuit = Poker.SuitType.Spades , IsUsed = 0},
 } 
 
---[[
+
 
 table.sort(testCardsJinhua,Poker.card_comp)  
 table.sort(testCards3101niu,Poker.card_comp)  

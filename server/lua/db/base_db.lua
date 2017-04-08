@@ -41,7 +41,7 @@ function _M.getBaseFromSql(srcsql,parm,andor,startindex,offset)
 
 	local sqlstr = db_help.select_help(srcsql,parm,andor,startindex,offset)
 	local db = mysql:new()	
-	 db:query("SET NAMES utf8")
+	db:query("SET NAMES utf8")
 	local res, err, errno, sqlstate = db:query(sqlstr)
 	db:close()
 	if not res then

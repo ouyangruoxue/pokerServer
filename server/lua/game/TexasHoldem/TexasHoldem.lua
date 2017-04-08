@@ -60,8 +60,7 @@ local CardType = _TexasHoldem.CardType;
                 cards[i]
             }
 ]]
-function cardsTypeCmp(cmp1,cmp2)
-    
+function _TexasHoldem.cardsTypeCmp(cmp1,cmp2)
     if cmp1.cardSize ==  cmp2.cardSize then
         return cmp1.cardValue > cmp2.cardValue;
     end
@@ -166,7 +165,7 @@ function _TexasHoldem.getCardType(cards)
         end  
         --[[end return cardtype_param;--]]  
         -- 排序一次 进行大小获取
-        table.sort(cardtype_param.status,cardsTypeCmp);
+        table.sort(cardtype_param.status,_TexasHoldem.cardsTypeCmp);
         local statusArray = cardtype_param.status;
         local newCards = nil;
         -- ngx.say(cjson.encode(cardtype_param.status))
@@ -467,7 +466,7 @@ end
 --[[
      Action  = 1,     --叫注 / 说话 一个玩家的决定共有七种。
 ]]
-local PlayerActions = { 
+_TexasHoldem.PlayerActions = { 
     Bet     = 1,        --押注 - 押上筹码
     Call    = 2,       --跟进 - 跟随众人押上同等的注额
     Fold    = 3,       --收牌 / 不跟 - 放弃继续牌局的机会
@@ -481,7 +480,7 @@ local PlayerActions = {
 Betting Rounds 押注圈 - 每一个牌局可分为四个押注圈。每一圈押注由按钮(庄家)左侧的玩家开始叫注。
 ]]
 
-local BettingRounds = {
+_TexasHoldem.BettingRounds = {
         Pre_flop = 1,       --底牌权 / 前翻牌圈 - 公共牌出现以前的第一轮叫注。
         Flop_round = 2,     --翻牌圈 - 首三张公共牌出现以后的押注圈 。
         Turn_round = 3,     --转牌圈 - 第四张公共牌出现以后的押注圈 。
@@ -492,7 +491,7 @@ local BettingRounds = {
     在每一局开始时,台面上必须有“盲注”。
     这是对玩家强制性的押注,为的是确保“底池”(每一牌局的奖金)至少有个数。德州扑克里的盲注一般由按钮左侧的两人付出。
 ]]
-local PlayerStatus = {
+_TexasHoldem.PlayerStatus = {
     Offine = 0 ,        --掉线/离线
     Playing = 1,        --正常进行
     Watch = 2,          --观望 
@@ -500,33 +499,12 @@ local PlayerStatus = {
     
 }
 
-local PlayerRole = {
+_TexasHoldem.PlayerRole = {
     Dealer = 1 , -- 庄家
     Door = 2,   -- 散户
 }
-
-local Player = {
-    PlayerId = 0,  --玩家ID
-    PlayerName = "玩家N",
-    PlayerMoney = 100, -- 玩家金钱
-    PlayerRole = PlayerRole.Dealer,
-    PlayerStatus = PlayerStatus.Watch,
-    Cards = {}
-}
-
-Player.__Index = Player;
-
-function Player.new(self,playerId)
-    local tDes = setmetatable({}, Player)  
-    tDes.PlayerId = playerId;
-    return   tDes;
-end
-
-function Player.Action(self)
-    
-
-end
-  
+ 
+  --[[
 local player = {
     cardType = nil;
     cards = { 
@@ -555,9 +533,9 @@ local player1 = {
 
 
 
---[[
-    模拟皇家同花顺
-]]
+
+    -- 模拟皇家同花顺
+
 
 
 local testCards_RoyalFlush = { 

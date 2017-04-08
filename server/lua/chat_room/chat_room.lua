@@ -11,20 +11,19 @@
  
 local _CHATROOM_ERR = require "chat_room.chat_room_err" 
 local redis_lock = require "common.redis_lock"
-require "init.lua_func_ex"
 local Player =  require "game.TexasHoldem.Player"
+local Card  = require "game.TexasHoldem.Card"
 local CardSet = require "game.TexasHoldem.CardSet"
 local _TexasHoldem = require "game.TexasHoldem.TexasHoldem"
-local _NNPoker = require "game.niuniu.niuniu";
+local _NNPoker = require "game.niuniu.niuniu"
 local randomname = require "game.TexasHoldem.player_robot_name"
-local Card = require "game.TexasHoldem.Card"
+
 local redis = require "redis.zs_redis"
 local cjson = require "cjson"
 local uuid = require 'resty.jit-uuid'
 local betdb = require "db.bet.bet_db"
 
-
-
+ 
 
 local _Chatroom = {
 	roomId = "",
@@ -195,7 +194,7 @@ _Chatroom.sendMsg = function(_self,msg)
 end
 
 
-function _Chatroom:sendMsgToNetease()
+function _Chatroom:sendMsgToNetease(Message)
 
     local http = require "resty.http"
     local neteaseHead =  require "netease.netease_header"
@@ -208,11 +207,14 @@ function _Chatroom:sendMsgToNetease()
     uuid.seed(tSec)
     local msgid = uuid()
 
-    local ext = {}
+    -- local ext = {}
 
-    ext.betRank = self.betRank
+    -- ext.dat = self.betRank
 
-    ext.onlineNum = self.playerS
+    -- ext.onlineNum = self.playerS
+
+    -- ext.type = 3
+
 
     local headr = neteaseHead.getNeteaseHttpHeadr(0)
     
@@ -226,7 +228,7 @@ function _Chatroom:sendMsgToNetease()
     caputureAgrs.roomid = self.anchorNeteaseRoomId
     caputureAgrs.msgType = 100
     caputureAgrs.msgId = msgid
-    caputureAgrs.attach = cjson.encode(ext)
+    caputureAgrs.attach = cjson.encode(Message)
 
    local res, err = httpc:request_uri("https://api.netease.im/nimserver/chatroom/sendMsg.action",{
         method = "POST",
@@ -547,12 +549,18 @@ _Chatroom.stopBet = function (premature ,_self)
     _self.gameSatus = 3
     local msgJson = cjson.encode(statustable)
     _self:sendMsg(msgJson)
-    _self:sendMsgToNetease()
-    -- local thread1 = ngx.thread.spawn()  --开启第一个线程； 第一个参数是匿名函数 后面的参数是匿名函数的参数
 
-    -- ngx.thread.wait(thread1)  --等待第一个线程的返回结果  
+    local neteaseMsg = {}
+
+    neteaseMsg.data = _self.betRank
+
+    neteaseMsg.onlineNum = _self.playerS
+
+    neteaseMsg.type = 3
 
 
+    _self:sendMsgToNetease(neteaseMsg)
+  
     --5
     local ok, err = ngx.timer.at(5, _self.dealCardByGameType,_self)
      if not ok then
@@ -573,9 +581,6 @@ _Chatroom.dealCardByGameType = function (premature ,_self)
 
      _self:dealHandCard(2)
      _self:dealPublicCard(5)
-     -- ngx.log(ngx.ERR, "myuser_code--------------: ", cjson.encode(_self.anchor_user_code))
-     -- ngx.log(ngx.ERR, "myhandcards-----------: ", cjson.encode(_self.gamePlayMap))
-     -- ngx.log(ngx.ERR, "mypubliccards-----------: ", cjson.encode(_self.publicCards))	
 
     elseif tonumber(_self.game_type) == 2 then
     	_self:dealHandCard(5)
@@ -653,7 +658,15 @@ _Chatroom.turnon  = function (premature ,_self)
     
     end		
 
+    --发送牌局结果到云信聊天室
     
+    local neteaseMsg = {}
+
+    neteaseMsg.data = _self.gamePlayMap
+
+    neteaseMsg.type = 4
+
+    _self:sendMsgToNetease(neteaseMsg)
 
 
 
@@ -666,9 +679,7 @@ _Chatroom.turnon  = function (premature ,_self)
     _self.gameSatus = 5
     local msgJson = cjson.encode(statustable)
     _self:sendMsg(msgJson)
-
-
-    
+ 
 
      local ok, err = ngx.timer.at(6, _self.settlement,_self)
      if not ok then
@@ -707,10 +718,10 @@ _Chatroom.settlement  = function (premature ,_self)
     if index > 0 or typeindex > 0 then
         
      --下注结果处理 数据库更新
-     result = _self:resulthandle()
+      _self:resulthandle()
   
     --下注消息回发
-     returnBetResult = _self:sendMsgForBetResult()
+      _self:sendMsgForBetResult()
     
     end    
 
@@ -718,15 +729,15 @@ _Chatroom.settlement  = function (premature ,_self)
          return
      end 
 
-     if result and returnBetResult then
+     --if result and returnBetResult then
         --6
         local ok, err = ngx.timer.at(3, _self.prepare,_self)
         if not ok then
-         ngx.log(ngx.ERR, "failed to create timer: ", err)
-        return
-     end
+             ngx.log(ngx.ERR, "failed to create timer: ", err)
+            return
+        end
 
-    end     
+   -- end     
 
 end
 

@@ -44,7 +44,7 @@ local chat_room = anchors:getChatRoom(args.room_id_pk)
 				chat_room.roomPwd = args.password
 			end	
 
-			chat_room.prepare(false,chat_room)
+			--chat_room.prepare(false,chat_room)
 	end
 		
 local  result = responeData.new_success({})

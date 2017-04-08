@@ -1,6 +1,4 @@
-
-require "game.TexasHoldem.lua_func_ex"
-
+local cjson = require "cjson"
 --[[
 -- 扑克牌的数据预定义 默认系统返回一个poker信息,不同游戏继承当前poker结构
 -- 提供扑克牌的生成,随机输出牌,
@@ -187,7 +185,7 @@ end
 -------------------------------------------------
 -------------------------------------------------
 --]]
-local cjson = require "cjson"
+
 
 function _Poker.card_comp(card1,card2) 
     if card1.cardId  ~= card2.cardId then   
@@ -272,8 +270,9 @@ function _Poker:new(number,hasJoker)
     return resultCards;
 end
 
-math.randomseed(tostring(os.time()):reverse():sub(1, 7))
+
 function _Poker.get(poker)
+    math.randomseed(tostring(os.time()):reverse():sub(1, 7))
     local index = math.random(1, table.getn(poker))
     local card = poker[index]
     table.remove(poker, index)
