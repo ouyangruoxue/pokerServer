@@ -62,6 +62,8 @@ local _Chatroom = {
     --限红
     limit_red = {},
 
+    --房间是否被关系
+    isclose = false,
 
     anchorNeteaseRoomId = "",--云信聊天室id
 
@@ -488,7 +490,7 @@ _Chatroom.prepare = function (premature,_self)
     _self.stakePokeTypeMap = {}
     _self.betRank = {}
     _self.total_bet = {}
-
+    _self.isclose = false
 
     for suit = 1, 4, 1 do
         for id = 1, 13, 1 do
@@ -724,10 +726,11 @@ _Chatroom.settlement  = function (premature ,_self)
       _self:sendMsgForBetResult()
     
     end    
-
-     if tonumber(anchor_status) == 0 or tonumber(room_status) == 0 then
-         return
-     end 
+    
+     -- if tonumber(anchor_status) == 0 or tonumber(room_status) == 0 then
+     --    _self.isclose = true
+     --     return
+     -- end 
 
      --if result and returnBetResult then
         --6
