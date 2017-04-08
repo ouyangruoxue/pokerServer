@@ -1,0 +1,1 @@
+tail -f E:\MemoriesOfTime\04sourcecode\server\logs\error.log
