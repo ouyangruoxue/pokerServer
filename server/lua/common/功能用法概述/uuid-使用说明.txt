@@ -1,0 +1,29 @@
+
+-- 1   jituuid 用法如下
+
+local jituuid = require 'resty.jit-uuid'
+
+ngx.say(jituuid.seed())        ---> automatic seeding with os.time(), LuaSocket, or ngx.time()
+
+ngx.say(jituuid())             ---> v4 UUID (random)
+ngx.say(jituuid.generate_v4()) ---> v4 UUID
+
+ngx.say(jituuid.generate_v3()) ---> v3 UUID (name-based with MD5)
+ngx.say(jituuid.generate_v5()) ---> v5 UUID (name-based with SHA-1)
+
+jituuid.is_valid()    ---> true/false (automatic JIT PCRE or Lua patterns)
+
+
+-- 2  uuid osx系统专用   作者 -- bungle
+local uuid 		= require "resty.uuid"; 
+local uuidstr = uuid.generate_time();
+				uuid.generate();
+				uuid.generate_random();
+				uuid.generate_time_safe()
+
+
+ngx.say(uuidstr)
+
+
+
+-- 3 linux生产环境中使用 lua-resty-UUID-master 增加性能能力!!!!!!!!!

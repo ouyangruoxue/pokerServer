@@ -1,0 +1,149 @@
+HTTPS简介
+
+HTTPS(Hypertext Transfer Protocol over Secure Socket Layer),是以安全为目标的HTTP通道，简单来讲就是HTTP的安全版。即HTTP下加入SSL层，HTTPS的安全基础是SSL，因此加密的详细内容就需要SSL。
+
+它是一个URI scheme（抽象标识符体系），句法类同http:体系，用于安全的http数据传输。https使用的默认端口是443.
+
+SSL证书
+
+证书类型简介
+
+要设置安全服务器，使用公共钥创建一对公私钥对。大多数情况下，发送证书请求（包括自己的公钥），你的公司证明材料以及费用到一个证书颁发机构(CA).CA验证证书请求及您的身份，然后将证书返回给您的安全服务器。
+
+但是内网实现一个服务器端和客户端传输内容的加密，可以自己给自己颁发证书，只需要忽略掉浏览器不信任的警报即可！
+
+由CA签署的证书为您的服务器提供两个重要的功能：
+
+浏览器会自动识别证书并且在不提示用户的情况下允许创建一个安全连接
+当一个CA生成一个签署过的证书，它为提供网页给浏览器的组织提供身份担保。
+多数支持ssl的web服务器都有一个CA列表，它们的证书会被自动接受。当一个浏览器遇到一个其授权CA并不在列表中的证书，浏览器将询问用户是否接受或拒绝连接
+
+
+
+二、使用 OpenSSL 生成 SSL Key 和 CSR
+
+由于只有浏览器或者系统信赖的 CA 才可以让所有的访问者通畅的访问你的加密网站，而不是出现证书错误的提示。所以我们跳过自签证书的步骤，直接开始签署第三方可信任的 SSL 证书吧。
+
+OpenSSL 在 Linux、OS X 等常规的系统下默认都安装了，因为一些安全问题，一般现在的第三方 SSL 证书签发机构都要求起码 2048 位的 RSA 加密的私钥。
+
+同时，普通的 SSL 证书认证分两种形式，一种是 DV（Domain Validated），还有一种是 OV （Organization Validated），前者只需要验证域名，后者需要验证你的组织或公司，在安全性方面，肯定是后者要好。
+
+无论你用 DV 还是 OV 生成私钥，都需要填写一些基本信息，这里我们假设如下：
+
+域名，也称为 Common Name，因为特殊的证书不一定是域名：example.com
+
+组织或公司名字（Organization）：Example, Inc.
+
+部门（Department）：可以不填写，这里我们写Web Security
+
+城市（City）：Beijing
+
+省份（State / Province）：Beijing
+
+国家（Country）：CN
+
+加密强度：2048 位，如果你的机器性能强劲，也可以选择 4096 位
+
+按照以上信息，使用 OpenSSL 生成 key 和 csr 的命令如下
+
+openssl req -new -newkey rsa:2048 -sha256 -nodes -out zhengsu.csr -keyout zhengsu.key -subj "/C=CN/ST=Beijing/L=Beijing/O=Example Inc./OU=Web Security/CN=example.com"
+PS：如果是泛域名证书，则应该填写*.example.com
+
+你可以在系统的任何地方运行这个命令，会自动在当前目录生成zhengsu.csr和zhengsu.key这两个文件
+
+接下来你可以查看一下zhengsu.csr，得到类似这么一长串的文字
+
+-----BEGIN CERTIFICATE REQUEST-----
+MIICujCCAaICAQAwdTELMAkGA1UEBhMCQ04xEDAOBgNVBAgTB0JlaWppbmcxEDAO  
+BgNVBAcTB0JlaWppbmcxFTATBgNVBAoTDEV4YW1wbGUgSW5jLjEVMBMGA1UECxMM  
+V2ViIFNlY3VyaXR5MRQwEgYDVQQDEwtleGFtcGxlLmNvbTCCASIwDQYJKoZIhvcN  
+AQEBBQADggEPADCCAQoCggEBAPME+nvVCdGN9VWn+vp7JkMoOdpOurYMPvclIbsI  
+iD7mGN982Ocl22O9wCV/4tL6DpTcXfNX+eWd7CNEKT4i+JYGqllqP3/CojhkemiY  
+SF3jwncvP6VoST/HsZeMyNB71XwYnxFCGqSyE3QjxmQ9ae38H2LIpCllfd1l7iVp  
+AX4i2+HvGTHFzb0XnmMLzq4HyVuEIMoYwiZX8hq+kwEAhKpBdfawkOcIRkbOlFew  
+SEjLyHY+nruXutmQx1d7lzZCxut5Sm5At9al0bf5FOaaJylTEwNEpFkP3L29GtoU  
+qg1t9Q8WufIfK9vXqQqwg8J1muK7kksnbYcoPnNgPx36kZsCAwEAAaAAMA0GCSqG  
+SIb3DQEBBQUAA4IBAQCHgIuhpcgrsNwDuW6731/DeVwq2x3ZRqRBuj9/M8oONQen  
+1QIacBifEMr+Ma+C+wIpt3bHvtXEF8cCAJAR9sQ4Svy7M0w25DwrwaWIjxcf/J8U  
+audL/029CkAuewFCdBILTRAAeDqxsAsUyiBIGTIT+uqi+EpGG4OlyKK/MF13FxDj  
+/oKyrSJDtp1Xr9R7iqGCs/Zl5qWmDaLN7/qxBK6vX2R/HLhOK0aKi1ZQ4cZeP7Mr
+8EzjDIAko87Nb/aIsFyKrt6Ze3jOF0/vnnpw7pMvhq+folWdTVXddjd9Dpr2x1nc  
+y5hnop4k6kVRXDjQ4OTduQq4P+SzU4hb41GIQEz4  
+-----END CERTIFICATE REQUEST-----
+
+
+检测配置文件没问题后重新读取 Nginx 即可
+
+nginx -t && nginx -s reload
+
+但是这么做并不安全，默认是 SHA-1 形式，而现在主流的方案应该都避免 SHA-1，为了确保更强的安全性，我们可以采取迪菲－赫尔曼密钥交换
+
+首先，进入/etc/ssl/certs目录并生成一个dhparam.pem
+
+cd /etc/ssl/certs  
+openssl dhparam -out dhparam.pem 2048 # 如果你的机器性能足够强大，可以用 4096 位加密
+
+生成完毕后，在 Nginx 的 SSL 配置后面加入
+
+复制代码
+ssl_prefer_server_ciphers on;
+        ssl_dhparam /etc/ssl/certs/dhparam.pem;
+        ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
+        ssl_ciphers "EECDH+ECDSA+AESGCM EECDH+aRSA+AESGCM EECDH+ECDSA+SHA384 EECDH+ECDSA+SHA256 EECDH+aRSA+SHA384 EECDH+aRSA+SHA256 EECDH+aRSA+RC4 EECDH EDH+aRSA !aNULL !eNULL !LOW !3DES !MD5 !EXP !PSK !SRP !DSS !RC4";
+        keepalive_timeout 70;
+        ssl_session_cache shared:SSL:10m;
+        ssl_session_timeout 10m;
+
+
+同时，如果是全站 HTTPS 并且不考虑 HTTP 的话，可以加入 HSTS 告诉你的浏览器本网站全站加密，并且强制用 HTTPS 访问
+
+add_header Strict-Transport-Security max-age=63072000;
+        add_header X-Frame-Options DENY;
+        add_header X-Content-Type-Options nosniff;
+
+同时也可以单独开一个 Nginx 配置，把 HTTP 的访问请求都用 301 跳转到 HTTPS
+
+server {  
+        listen 80;
+        listen [::]:80 ssl ipv6only=on;
+        server_name     example.com;
+        return 301 https://example.com$request_uri;
+}
+
+
+
+
+
+        
+
+
+生成SSL证书
+
+
+1 输入命令  提示输入密码
+openssl genrsa -des3 -out zhengsu.key 2048
+2 执行下面语句   创建生成 zhengsu.csr
+openssl req -new -key zhengsu.key -out zhengsu.csr
+
+3 创建一个自己签署的CA证书
+openssl req -new -x509 -days 3650 -key zhengsu.key -out zhengsu.crt
+
+
+
+# 1、首先，进入你想创建证书和私钥的目录，例如：
+cd /etc/nginx/
+
+# 2、创建服务器私钥，命令会让你输入一个口令：
+openssl genrsa -des3 -out server.key 1024
+
+# 3、创建签名请求的证书（CSR）：
+openssl req -new -key server.key -out server.csr
+
+# 4、在加载SSL支持的Nginx并使用上述私钥时除去必须的口令：
+cp server.key server.key.org
+openssl rsa -in server.key.org -out server.key
+
+
+# 5、最后标记证书使用上述私钥和CSR：
+openssl x509 -req -days 365 -in server.csr -signkey server.key -out server.crt
+

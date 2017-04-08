@@ -1,0 +1,203 @@
+ <!doctype html>
+<html class="no-js fixed-layout">  
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>德州扑克后台管理系统</title>
+  <meta name="description" content="这是一个 index 页面">
+  <meta name="keywords" content="index">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="Cache-Control" content="no-siteapp" />
+  <link rel="icon" type="image/png" href="/assets/i/favicon.png">
+  <link rel="apple-touch-icon-precomposed" href="/assets/i/app-icon72x72@2x.png">
+  <meta name="apple-mobile-web-app-title" content="Amaze UI" />
+  <link rel="stylesheet" href="/assets/css/amazeui.min.css"/>
+  <link rel="stylesheet" href="/assets/css/admin.css">
+</head>
+
+<body>
+<!--[if lte IE 9]>
+<p class="browsehappy">你正在使用<strong>过时</strong>的浏览器，Amaze UI 暂不支持。 请 <a href="http://browsehappy.com/" target="_blank">升级浏览器</a>
+  以获得更好的体验！</p>
+<![endif]-->
+
+	{(/html/part_html/header.html)}
+
+<div class="am-cf admin-main">
+  <!-- sidebar start -->
+	{(/html/part_html/sidebar.html)}
+  <!-- sidebar end -->
+
+  <!-- content start -->
+  <div class="admin-content">
+    <div class="admin-content-body">
+      <div class="am-cf am-padding">
+        <div class="am-fl am-cf"><strong class="am-text-primary am-text-lg">客户端后台</strong> / <small>增加房间</small></div>
+      </div>
+	  <div class="am-tabs am-margin" data-am-tabs>
+      <ul class="am-tabs-nav am-nav am-nav-tabs">
+        <li class="am-active"><a href="#tab1">增加房间</a></li>
+      </ul>
+
+      <div class="am-tabs-bd">
+	  
+        <div class="am-tab-panel am-fade am-in am-active" id="tab1">
+
+          <div class="am-g am-margin-top">
+            <div class="am-u-sm-4 am-u-md-2 am-text-right">房间名称</div>
+            <div class="am-u-sm-8 am-u-md-10">
+              <div class="am-btn-group" data-am-button>
+                <input type="text" placeholder="房间名称" id="room_name"></input>
+              </div>
+            </div>
+          </div>
+		  
+		  
+		  
+		  <!-- <div class="am-g am-margin-top"> -->
+              <!-- <div class="am-u-sm-4 am-u-md-2 am-text-right">房间密码</div> -->
+              <!-- <div class="am-u-sm-8 am-u-md-4"> -->
+                <!-- <input type="text" class="am-input-sm" placeholder="房间密码" id="password"> -->
+              <!-- </div> -->
+              <!-- <div class="am-hide-sm-only am-u-md-6"></div> -->
+          <!-- </div> -->
+		  
+		 <!-- <div class="am-g am-margin-top"> -->
+            <!-- <div class="am-u-sm-4 am-u-md-2 am-text-right">最多游戏人数</div> -->
+            <!-- <div class="am-u-sm-8 am-u-md-10"> -->
+              <!-- <div class="am-btn-group" data-am-button> -->
+                <!-- <input type="text" placeholder="最多游戏人数" id="limit_players"></input> -->
+              <!-- </div> -->
+            <!-- </div> -->
+          <!-- </div> -->
+		  <!-- <div class="am-g am-margin-top"> -->
+            <!-- <div class="am-u-sm-4 am-u-md-2 am-text-right">下注最高金额</div> -->
+            <!-- <div class="am-u-sm-8 am-u-md-10"> -->
+              <!-- <div class="am-btn-group" data-am-button> -->
+                <!-- <input type="text" placeholder="下注最高金额" id="limit_money"></input> -->
+              <!-- </div> -->
+            <!-- </div> -->
+          <!-- </div> -->
+		  
+		  <!-- <div class="am-g am-margin-top"> -->
+            <!-- <div class="am-u-sm-4 am-u-md-2 am-text-right">游戏类型</div> -->
+            <!-- <div class="am-u-sm-8 am-u-md-10"> -->
+              <!-- <select data-am-selected="{btnSize: 'sm'}" id="game_type"> -->
+			  <!-- {% for k,v in pairs(game_type_data) do %} -->
+                <!-- <option value="{*v.id_pk*}">{*v.game_name*}</option> -->
+			  <!-- {% end %} -->
+              <!-- </select> -->
+            <!-- </div> -->
+          <!-- </div> -->
+		  <!-- <div class="am-g am-margin-top"> -->
+            <!-- <div class="am-u-sm-4 am-u-md-2 am-text-right">主播id</div> -->
+            <!-- <div class="am-u-sm-8 am-u-md-10"> -->
+              <!-- <div class="am-btn-group" data-am-button> -->
+                <!-- <input type="text" placeholder="主播id" id="anchor_id"></input> -->
+              <!-- </div> -->
+            <!-- </div> -->
+          <!-- </div> -->
+		<!-- <div class="am-g am-margin-top"> -->
+            <!-- <div class="am-u-sm-4 am-u-md-2 am-text-right">房间类型</div> -->
+            <!-- <div class="am-u-sm-8 am-u-md-10"> -->
+              <!-- <select data-am-selected="{btnSize: 'sm'}" id="room_status"> -->
+                <!-- <option value="comm_room">普通房间</option> -->
+				<!-- <option value="vip_room">VIP房间</option> -->
+              <!-- </select> -->
+            <!-- </div> -->
+          <!-- </div> -->
+		  <div class="am-g am-margin-top">
+            <div class="am-u-sm-4 am-u-md-2 am-text-right">房间类型</div>
+            <div class="am-u-sm-8 am-u-md-10">
+              <select data-am-selected="{btnSize: 'sm'}" id="is_rel_room">
+                <option value="1">真人房间</option>
+				<option value="0">虚拟房间</option>
+              </select>
+            </div>
+          </div>
+		  
+		  <div class="am-g am-margin-top">
+            <div class="am-u-sm-4 am-u-md-2 am-text-right">房间准入金额</div>
+            <div class="am-u-sm-8 am-u-md-10">
+              <div class="am-btn-group" data-am-button>
+                <input type="text" placeholder="房间准入金额" id="access_count"></input>
+              </div>
+            </div>
+          </div>
+
+		  
+		  <div class="am-g am-margin-top">
+            <div class="am-u-sm-4 am-u-md-2 am-text-right">房间状态</div>
+            <div class="am-u-sm-8 am-u-md-10">
+              <select data-am-selected="{btnSize: 'sm'}" id="room_status">
+                <option value="0">房间关闭</option>
+				<option value="1">房间开启</option>
+              </select>
+            </div>
+          </div>
+		  
+			<div class="am-margin">
+			  <button type="button" class="am-btn am-btn-primary am-btn-xs" onclick="add_gift_submit(this)">提交保存</button>
+			</div>
+        </div>
+    </div>
+
+    </div>
+
+
+	{(/html/part_html/foot.html)}
+  </div>
+  <!-- content end -->
+
+</div>
+
+<a href="#" class="am-icon-btn am-icon-th-list am-show-sm-only admin-menu" data-am-offcanvas="{target: '#admin-offcanvas'}"></a>
+
+<!--[if lt IE 9]>
+<script src="http://libs.baidu.com/jquery/1.11.1/jquery.min.js"></script>
+<script src="http://cdn.staticfile.org/modernizr/2.8.3/modernizr.js"></script>
+<script src="/assets/js/amazeui.ie8polyfill.min.js"></script>
+<![endif]-->
+
+
+<!--[if (gte IE 9)|!(IE)]><!-->
+<script src="/assets/js/jquery-3.1.1.min.js"></script>
+<!--<![endif]-->
+<script src="/assets/js/amazeui.min.js"></script>
+<script src="/assets/js/app.js"></script>
+<script src="/assets/js/mycomment.js"></script>
+<script>
+	<!-- 新增房间信息 -->
+	function add_gift_submit(obj){
+		var room_name=document.getElementById("room_name").value
+		var is_rel_room=document.getElementById("is_rel_room").value
+		var access_count=document.getElementById("access_count").value
+		var room_status=document.getElementById("room_status").value
+			$.ajax({
+			type:"post", 
+			<!-- url:"http://localhost/api/anchor/save_room",  -->
+			url:room_save_path(),
+			 data:{ 
+				"room_name":room_name,
+				 "is_rel_room":is_rel_room, 
+				 "access_count":access_count, 
+				 "room_status":room_status
+				 },  
+			cache:false,
+			success:function(data,status){ 
+				var dateJson = JSON.parse(data)	 
+				 if(1==dateJson.code){ 
+					 alert("增加成功！") 
+					 window.location.reload();
+				 }else{ 
+					 alert("增加失败！")
+				} 
+			}
+		 })
+	
+	}
+
+</script>
+</body>
+</html>

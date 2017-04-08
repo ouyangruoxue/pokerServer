@@ -1,0 +1,353 @@
+@charset "utf-8";
+html,body,div,input,button,ul,li{
+    margin: 0;
+    padding: 0;
+}
+body{
+    font-family: '微软雅黑';
+}
+
+img{
+    border:none;
+    display:block;
+}
+li{
+    list-style: none;
+}
+body{
+    background-image: url("../images/indexBg.png");
+    position: relative;
+}
+/*登录注册链接文字*/
+.loginRegLink{
+    position: absolute;
+    font-size: 16px;
+    color: #ffffff;
+    top:20px;
+    right: 20px;
+}
+.loginRegLink span{
+    margin-left: 10px;
+    margin-right: 10px;
+}
+.loginRegLink a{
+    cursor: pointer;
+}
+/*登录注册框*/
+.loginRegDialog{
+    width: 494px;
+    height: 394px;
+    position: absolute;
+    top:300px;
+    left: 50%;
+    margin-left:-260px ;
+    background-color: #75ac86;
+    -webkit-border-radius:10px;
+    -moz-border-radius:10px;
+    -ms-border-radius:10px;
+    -o-border-radius:10px;
+    padding: 13px;
+}
+.loginRegContentDialog{
+    width: 494px;
+    height: 394px;
+    background-color: #ffffff;
+    -webkit-border-radius:10px;
+    -moz-border-radius:10px;
+    -ms-border-radius:10px;
+    -o-border-radius:10px;
+    position: relative;
+}
+.loginRegDialog .closeBtn{
+    width: 32px;
+    height: 32px;
+    background-image: url("../images/loginRegCloseBtn.png");
+    position: absolute;
+    top:0;
+    right: 0;
+}
+.loginContentDialog,.regContentDialog,.passwordContentDialog{
+    position: absolute;
+    top:32px;
+    left: 97px;
+    width: 300px;
+}
+.regContentDialog,.passwordContentDialog{
+    top:70px;
+}
+
+.loginWay{
+    font-size: 16px;
+    color: #666666;
+    border-bottom: 1px solid #75ac86;
+    float: right;
+}
+.loginWay2{
+    font-size: 16px;
+    color: #666666;
+    border-bottom: 1px solid #75ac86;
+    float: right;
+}
+.loginAccountWay,.loginMobilePhoneWay{
+    margin-top: 32px;
+}
+.loginInputBox,.regInputBox,.passwordInputBox{
+    width: 300px;
+    border-bottom: 1px solid #c9c9c9;
+    height: 36px;
+    margin-top: 14px;
+    position: relative;
+}
+.loginInputBox input,.regInputBox input,.passwordInputBox input{
+    font-size: 16px;
+    color: #000;
+    padding-left: 4px;
+    border: none;
+    outline: none;
+    width: 296px;
+    height: 26px;
+    margin-top: 5px;
+    background: none;
+    font-family: '微软雅黑';
+}
+.loginInputBox .verificationCode{
+    width: 200px;
+}
+.getVerificationCode{
+    position: absolute;
+    top:8px;
+    right: 0;
+    color: #75ac86;
+
+}
+::-webkit-input-placeholder { /* WebKit browsers */
+    color:#666;
+    font-size: 16px;
+    font-family: '微软雅黑';
+}
+:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
+    color:#666;
+    font-size: 16px;
+    font-family: '微软雅黑';
+}
+::-moz-placeholder { /* Mozilla Firefox 19+ */
+    color:#666;
+    font-size: 16px;
+    font-family: '微软雅黑';
+}
+:-ms-input-placeholder { /* Internet Explorer 10+ */
+    color:#666;
+    font-size: 16px;
+    font-family: '微软雅黑';
+}
+.loginRegBtn{
+    outline: none;
+    background: none;
+    width: 298px;
+    border: 1px solid #75ac86;
+    text-align: center;
+    line-height: 40px;
+    margin-top: 20px;
+    color: #75ac86;
+    font-size: 16px;
+    font-family: '微软雅黑';
+}
+.otherBehavior{
+    width: 300px;
+    text-align: center;
+    margin-top: 10px;
+    color: #666666;
+    font-size: 14px;
+}
+.otherBehavior a{
+    margin-left: 20px;
+    margin-right: 20px;
+}
+.thirdWayPrompt{
+    width: 300px;
+    height: 20px;
+    line-height: 20px;
+    background-image: url("../images/thirdWayPromptLine.png");
+    text-align: center;
+    font-size: 16px;
+    color: #666666;
+    margin-top: 48px;
+}
+.thirdWay{
+    margin-left: 54px;
+    margin-top: 12px;
+}
+.thirdWay li{
+    float: left;
+    width: 44px;
+    height: 44px;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+.thirdWayWeChat{
+    background-image: url("../images/thirdWayWeChat.png");
+}
+.thirdWayQQ{
+    background-image: url("../images/thirdWayQQ.png");
+}
+.thirdWayWebo{
+    background-image: url("../images/thirdWayWebo.png");
+}
+.agreement{
+    font-size: 14px;
+    color: #999999;
+    width: 300px;
+    text-align: center;
+    margin-top: 30px;
+}
+.agreement a{
+    color: #75ac86;
+}
+/*点击新建书本按钮时的弹出框*/
+.newBookDialog{
+    width: 1008px;
+    height: 611px;
+    background-image: url("../images/indexBookBg.png");
+    position: absolute;
+    top:236px;
+    left: 50%;
+    margin-left: -504px;
+}
+.chooseNewBookType{
+    font-size: 18px;
+    color: #000000;
+    margin-top: 36px;
+    margin-left: 30px;
+}
+.newBookType{
+    position: absolute;
+}
+.newBookTypeOne{
+    top:86px;
+    left: 72px;
+}
+.newBookTypeTwo{
+    top:240px;
+    left: 276px;
+}
+.newBookTypeThree{
+    top:106px;
+    left: 564px;
+}
+.newBookTypeFour{
+    top:260px;
+    left: 770px;
+}
+.newBookType ul li{
+    float: left;
+    height: 24px;
+    line-height: 24px;
+    font-size: 14px;
+    color: #000000;
+}
+.newBookType ul{
+    margin-top: 4px;
+}
+.newBookIcon {
+    width: 24px;
+    margin-right: 8px;
+}
+.newBookIconOne{
+    background-image: url("../images/newBookTypeQQ.png");
+}
+.newBookIconTwo{
+    background-image: url("../images/newBookTypeWeChat.png");
+}
+.newBookIconThree{
+    background-image: url("../images/newBookTypeWebo.png");
+}
+.newBookIconFour{
+    background-image: url("../images/newBookTypeCustom.png");
+}
+.newBookSpecificType{
+    width: 182px;
+    height: 227px;
+
+}
+.newBookSpecificTypeOne{
+    background-image: url("../images/newBookQQ.png");
+}
+.newBookSpecificTypeTwo{
+    background-image: url("../images/newBookWeChat.png");
+}
+.newBookSpecificTypeThree{
+    background-image: url("../images/newBookWebo.png");
+}
+.newBookSpecificTypeThree{
+    background-image: url("../images/newBookWebo.png");
+}
+.newBookSpecificTypeFour{
+    background-image: url("../images/newBookCustom.png");
+}
+.newBookDialog .closeBtn{
+    width: 32px;
+    height: 32px;
+    background-image: url("../images/loginRegCloseBtn.png");
+    position: absolute;
+    top:0;
+    right:3px;
+}
+/*选择QQ空间书本*/
+.newBookInputBox{
+    width:420px;
+    border-bottom: 1px solid #c9c9c9;
+    height:36px;
+    margin-top: 54px;
+    margin-top: 54px;
+    margin-left:40px ;
+    position: relative;
+}
+.newBookInputBox input{
+    font-size: 16px;
+    color: #000;
+    padding-left: 4px;
+    border: none;
+    outline: none;
+    width: 416px;
+    height: 26px;
+    margin-top: 5px;
+    background: none;
+    font-family: '微软雅黑';
+}
+.newBookDialog .determineBtn{
+    outline: none;
+    border: none;
+    width: 140px;
+    text-align: center;
+    line-height: 36px;
+    margin-top: 20px;
+    color: #ffffff;
+    background-color: #75ac86;
+    font-size: 16px;
+    font-family: '微软雅黑';
+    margin-left:40px ;
+    -webkit-border-radius:5px;
+    -moz-border-radius:5px;
+    -ms-border-radius:5px;
+    -o-border-radius:5px;
+}
+.newBookDialog .prompt{
+    margin-left: 40px;
+    margin-top: 22px;
+    font-size: 14px;
+    color: #666666;
+}
+.newBookQQHint{
+    width: 424px;
+    height: 240px;
+    background-image: url("../images/newBookQQHint.png");
+    margin-left: 30px;
+    margin-top: 70px;
+}
+.newBookWeChatHint{
+    width: 430px;
+    height: 334px;
+    background-image: url("../images/newBookWeChatHint.png");
+    margin-left: 30px;
+    margin-top:16px;
+}

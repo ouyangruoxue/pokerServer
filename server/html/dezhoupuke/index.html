@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <script src="http://cdn.static.runoob.com/libs/angular.js/1.4.6/angular.min.js"></script>
+    <script src="jquery.min.js"></script>
+    <title>桌子列表</title>
+
+    <style>
+        table, th , td {
+            border: 1px solid grey;
+            border-collapse: collapse;
+            padding: 5px;
+        }
+        table tr:nth-child(odd) {
+            background-color: #f1f1f1;
+        }
+        table tr:nth-child(even) {
+            background-color: #ffffff;
+        }
+    </style>
+</head>
+<body>
+<div ng-app="myApp" ng-controller="myCtrl">
+    <table>
+        <th>名字</th>
+        <th>桌子编号</th>
+        <th>进入</th>
+        <tr ng-repeat="x in names">
+            <td>{{ x.name }}</td>
+            <td>{{ x.id }}</td>
+            <td><input type="button"  value="进入" deskid ="{{ x.id }}" onclick="intodestdetail(this)"></td>
+        </tr>
+    </table>
+</div>
+<script>
+
+    var app = angular.module('myApp', []);
+
+
+    app.controller('myCtrl', function($scope, $http) {
+        $http.get("http://192.168.1.109/api/demo")
+                .success(function (response) {$scope.names = response.data;});
+    });
+
+    function  intodestdetail(sender){
+        var id =sender.getAttribute("deskid");
+        window.location.href = "deskDetail.html?id="+id;
+    }
+
+</script>
+
+</body>
+</html>

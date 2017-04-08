@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>心书首页</title>
+    <link rel="stylesheet" href="css/index.css" type="text/css" charset="utf-8"/>
+</head>
+<body>
+    <div class="bigBox">
+        <!-- 登录注册-->
+        <div class="loginRegLink">
+            <a onclick="shw_log()">登录</a><span>|</span><a onclick="shw_reg()">注册</a>
+        </div>
+        <!-- 登录框-->
+        <div class="loginRegDialog">
+            <div class="loginRegContentDialog">
+                <div class="closeBtn" onclick="dsp_log()"></div>
+                <div class="loginContentDialog">
+
+                    <div class="loginWay" onclick="selway(this)">手机验证登录</div>
+					<div class="loginWay2" onclick="selway(this)" style="display: none">普通登录</div>
+                    <!-- 密码登录-->
+                    <div class="loginAccountWay">
+                        <div class="loginInputBox">
+                            <input type="text" placeholder="手机号/邮箱/用户名" onblur="check_input(this)"/>
+                        </div>
+                        <div class="loginInputBox">
+                            <input type="password"  placeholder="密码" onblur="check_input(this)">
+                        </div>
+                    </div>
+                    <!-- 手机验证码登录-->
+                    <div class="loginMobilePhoneWay" style="display: none" >
+                        <div class="loginInputBox">
+                            <input type="text" placeholder="手机号" onblur="check_input(this)">
+                        </div>
+                        <div class="loginInputBox">
+                            <input type="text" class="verificationCode" placeholder="验证码" onblur="check_input(this)">
+                            <div class="getVerificationCode" onclick="getPIN()">获取验证码</div>
+                        </div>
+                    </div>
+                    <button class="loginRegBtn" onclick="login(this)">登&nbsp;&nbsp;录</button>
+                    <div class="otherBehavior">
+                        <a>忘记密码</a><a>立刻注册</a>
+                    </div>
+                    <div class="thirdWaybox">
+                        <div class="thirdWayPrompt">使用第三方账户登录</div>
+                        <ul class="thirdWay">
+                            <li class="thirdWayWeChat"></li>
+                            <li class="thirdWayQQ"></li>
+                            <li class="thirdWayWebo"></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- 注册-->
+        <div class="loginRegDialog" style="display: none" >
+            <div class="loginRegContentDialog">
+                <div class="closeBtn" onclick="dsp_reg()"></div>
+                <div class="regContentDialog">
+                    <!-- 注册第一步-->
+                    <div class="regStepOne" style="display: none">
+                        <div class="regInputBox">
+                            <input type="text" placeholder="手机号/邮箱" onblur="check_input(this)"/>
+                        </div>
+                        <div class="regInputBox">
+                            <input type="text" class="verificationCode" placeholder="验证码" onblur="check_input(this)">
+                            <div class="getVerificationCode">获取验证码</div>
+                        </div>
+                        <button class="loginRegBtn">下&nbsp;&nbsp;一&nbsp;&nbsp;步</button>
+                    </div>
+                    <!-- 注册第二步-->
+                    <div class="regStepTwo">
+                        <div class="regInputBox">
+                            <input type="text" placeholder="用户名" onblur="check_input(this)"/>
+                        </div>
+                        <div class="regInputBox">
+                            <input type="password"  placeholder="密码" onblur="check_input(this)" />
+                        </div>
+                        <button class="loginRegBtn" onclick="reg_but()">注&nbsp;&nbsp;册</button>
+                    </div>
+                    <div class="agreement">注册代表您已阅读并同意<a>正溯心书用户协议</a></div>
+
+                </div>
+
+            </div>
+        </div>
+        <!-- 忘记密码-->
+        <div class="loginRegDialog" style="display: none" >
+            <div class="loginRegContentDialog">
+                <div class="closeBtn"></div>
+                <div class="passwordContentDialog">
+
+                     <div class="passwordInputBox">
+                         <input type="text" placeholder="手机号/邮箱" onblur="check_input(this)" />
+                     </div>
+                    <div class="passwordInputBox">
+                        <input type="text" class="verificationCode" placeholder="验证码" onblur="check_input(this)" />
+                        <div class="getVerificationCode">获取验证码</div>
+                    </div>
+                     <div class="passwordInputBox">
+                          <input type="password"  placeholder="设置密码" onblur="check_input(this)" />
+                     </div>
+                     <button class="loginRegBtn">保&nbsp;&nbsp;存</button>
+                </div>
+
+            </div>
+        </div>
+        <!-- 点击新建书本按钮时的弹出框-->
+        <div class="newBookDialog" style="display: none">
+            <div class="closeBtn" onclick="clo_type_book(this)"></div>
+            <div class="chooseNewBookType">选择制作书本的类型</div>
+            <div class="newBookType newBookTypeOne" onclick="new_type_book(this)">
+                <div class="newBookSpecificType newBookSpecificTypeOne"></div>
+                <ul>
+                    <li class="newBookIcon newBookIconOne"></li>
+                    <li>QQ空间一键成书</li>
+                </ul>
+            </div>
+            <div class="newBookType newBookTypeTwo" onclick="new_type_book(this)">
+                <div class="newBookSpecificType newBookSpecificTypeTwo"></div>
+                <ul>
+                    <li class="newBookIcon newBookIconTwo"></li>
+                    <li>微信朋友圈跃然纸上</li>
+                </ul>
+            </div>
+            <div class="newBookType newBookTypeThree" onclick="new_type_book(this)">
+                <div class="newBookSpecificType newBookSpecificTypeThree"></div>
+                <ul>
+                    <li class="newBookIcon newBookIconThree"></li>
+                    <li>微博故事导入成书</li>
+                </ul>
+            </div>
+            <div class="newBookType newBookTypeFour" onclick="new_type_book(this)">
+                <div class="newBookSpecificType newBookSpecificTypeFour"></div>
+                <ul>
+                    <li class="newBookIcon newBookIconFour"></li>
+                    <li>随心所欲自定义成书</li>
+                </ul>
+            </div>
+        </div>
+        <!-- 选择qq空间书本时-->
+        <div class="newBookDialog newBookDialogQQ" style="display: none">
+            <div class="closeBtn" onclick="clo_type_book(this)"></div>
+            <div class="chooseNewBookType">制作空间书&nbsp;|&nbsp;QQ账号绑定</div>
+            <div class="newBookInputBox">
+                <input type="text" placeholder="输入你的QQ账号" onblur="check_input(this)"/>
+            </div>
+            <button class="determineBtn">确&nbsp;定</button>
+            <div class="prompt">为了能顺利制成书本，请将您的空间访问权限设置为所有人</div>
+            <div class="newBookQQHint"></div>
+        </div>
+        <!-- 选择微信书本-->
+        <div class="newBookDialog newBookDialogWeChat" style="display: none">
+            <div class="closeBtn" onclick="clo_type_book(this)"></div>
+            <div class="chooseNewBookType">制作微信书&nbsp;|&nbsp;微信绑定</div>
+            <div class="newBookInputBox">
+                <input type="text" placeholder="输入您的微信号" onblur="check_input(this)"/>
+            </div>
+            <button class="determineBtn">确&nbsp;定</button>
+            <div class="prompt">制作微信书，先绑定微信号，再加小编为好友，等待系统导入数据</div>
+            <div class="newBookWeChatHint"></div>
+        </div>
+        <!-- 选择微博书-->
+        <div class="newBookDialog newBookDialogWebo" style="display: none">
+            <div class="closeBtn" onclick="clo_type_book(this)"></div>
+            <div class="chooseNewBookType">制作微博书&nbsp;|&nbsp;微博绑定</div>
+            <div class="newBookInputBox">
+                <input type="text" placeholder="输入您的微博个人主页网址" onblur="check_input(this)"/>
+            </div>
+            <button class="determineBtn">确&nbsp;定</button>
+        </div>
+    </div>
+	
+	
+	<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+	<script src="js/demo_js.js"></script>
+	<script src="js/json2.js"></script> 
+	<!-- <script language='javascript'> -->
+
+	<!-- </script> -->
+</body>
+</html>

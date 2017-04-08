@@ -1,0 +1,185 @@
+<!doctype html>
+<html class="no-js fixed-layout">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>德州扑克后台管理系统</title>
+  <meta name="description" content="这是一个 index 页面">
+  <meta name="keywords" content="index">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="Cache-Control" content="no-siteapp" />
+  <link rel="icon" type="image/png" href="/assets/i/favicon.png">
+  <link rel="apple-touch-icon-precomposed" href="/assets/i/app-icon72x72@2x.png">
+  <meta name="apple-mobile-web-app-title" content="Amaze UI" />
+  <link rel="stylesheet" href="/assets/css/amazeui.min.css"/>
+  <link rel="stylesheet" href="/assets/css/admin.css">
+</head>
+<body onload='initPageInfo({*minitor_index_pager.curr_page*},{*minitor_index_pager.max_page*},"pager_index")'>
+<!--[if lte IE 9]>
+<p class="browsehappy">你正在使用<strong>过时</strong>的浏览器，Amaze UI 暂不支持。 请 <a href="http://browsehappy.com/" target="_blank">升级浏览器</a>
+  以获得更好的体验！</p>
+<![endif]-->
+
+	{(/html/part_html/header.html)}
+
+<div class="am-cf admin-main">
+  <!-- sidebar start -->
+	{(/html/part_html/sidebar.html)}
+  <!-- sidebar end -->
+
+  <!-- content start -->
+  <div class="admin-content">
+    <div class="admin-content-body">
+      <div class="am-cf am-padding">
+        <div class="am-fl am-cf"><strong class="am-text-primary am-text-lg">客户端后台</strong> / <small>用户监控</small></div>
+      </div>
+
+
+      <div class="am-g">
+
+		
+		<div class="am-u-sm-12 am-u-md-3">
+          <div class="am-form-group">
+            <select data-am-selected="{btnSize: 'sm'}" onchange="change_channel()" id="channel_id_fk">
+			<option value="all_channel">全部渠道</option>
+			{% for k ,v in pairs(channel_busine_data) do %}
+              <option value="{*v.id_pk*}">{*v.channel_name*}</option>
+			{% end %}
+            </select>
+          </div>
+        </div>
+		
+		<div class="am-u-sm-12 am-u-md-3">
+          <div class="am-form-group">
+            <select data-am-selected="{btnSize: 'sm'}" onchange="change_user_select()" id="search_select">
+              <option value="option0">排序条件</option>
+              <option value="1">按照用户的连胜次数倒序排列</option>
+			  <option value="2">按照用户的连胜次数正序排列</option>
+			  <option value="3">按照用户的登录次数倒序排列</option>
+			  <option value="4">按照用户的登录次数正序排列</option>
+            </select>
+          </div>
+        </div>	
+		<div class="am-u-sm-12 am-u-md-3">
+          <div class="am-form-group">
+           
+          </div>
+        </div>	
+        <div class="am-u-sm-12 am-u-md-3">
+          <div class="am-input-group am-input-group-sm">
+            <input type="text" class="am-form-field" placeholder="用户昵称" id="search_word" value="{*room_index_searchStr*}">
+          <span class="am-input-group-btn">
+            <button class="am-btn am-btn-default" type="button" onclick="getSearch()">搜索</button>
+          </span>
+          </div>
+        </div>		
+
+      </div>
+	  
+	<div class="am-g">
+        <div class="am-u-sm-12">
+          <form class="am-form">
+            <table class="am-table am-table-striped am-table-hover table-main">
+              <thead>
+              <tr>
+                <!-- <th class="table-check"><input type="checkbox" /></th> -->
+				<th class="table-id">编号</th>
+				<th class="table-title">用户ID</th>
+				<th class="table-date am-hide-sm-only">用户昵称</th>
+				<th class="table-date am-hide-sm-only">用户盈利及亏损</th>
+				<th class="table-date am-hide-sm-only">用户最高连胜次数</th>
+				<th class="table-date am-hide-sm-only">用户登录次数</th>
+				<th class="table-date am-hide-sm-only">所属渠道商</th>
+              </tr>
+              </thead>
+              <tbody>
+				{% for k,v in pairs(monitor_index_data) do%}
+				<tr id="{*v.id_pk*}"> 
+					 <td>{* k *}</input></td> 
+						<td class="am-hide-sm-only">{*v.user_code*}</td>
+						<td class="am-hide-sm-only">{*v.nickname*}</td>
+						<td class="am-hide-sm-only">{*v.chip_value*}</td>
+						<td class="am-hide-sm-only">{*v.win_streak*}</td>
+						<td class="am-hide-sm-only">{*v.login_count*}</td>
+						<td class="am-hide-sm-only">{*v.channel_name*}</td>
+				    </tr>  
+			   {% end %}
+              </tbody>
+            </table>
+            <div class="am-cf" id="pager_index">
+              <!-- 共 15 条记录 -->
+              <!-- <div class="am-fr"> -->
+                <!-- <ul class="am-pagination"> -->
+                  <!-- <li class="am-disabled"><a href="#">?</a></li> -->
+                  <!-- <li class="am-active"><a href="#">1</a></li> -->
+                  <!-- <li><a href="#">2</a></li> -->
+                  <!-- <li><a href="#">3</a></li> -->
+                  <!-- <li><a href="#">4</a></li> -->
+                  <!-- <li><a href="#">5</a></li> -->
+                  <!-- <li><a href="#">?</a></li> -->
+                <!-- </ul> -->
+              <!-- </div> -->
+            </div> 
+			
+            <hr />
+            <p>注：.....</p>
+          </form>
+        </div>
+
+      </div>
+
+	{(/html/part_html/foot.html)}
+  </div>
+  <!-- content end -->
+
+</div>
+
+<a href="#" class="am-icon-btn am-icon-th-list am-show-sm-only admin-menu" data-am-offcanvas="{target: '#admin-offcanvas'}"></a>
+
+<!--[if lt IE 9]>
+<script src="http://libs.baidu.com/jquery/1.11.1/jquery.min.js"></script>
+<script src="http://cdn.staticfile.org/modernizr/2.8.3/modernizr.js"></script>
+<script src="/assets/js/amazeui.ie8polyfill.min.js"></script>
+<![endif]-->
+
+<!--[if (gte IE 9)|!(IE)]><!-->
+<script src="/assets/js/jquery-3.1.1.min.js"></script>
+<!--<![endif]-->
+<script src="/assets/js/amazeui.min.js"></script>
+<script src="/assets/js/app.js"></script>
+<script src="/assets/js/mycomment.js"></script>
+<script>
+<!-- window.location.href="http://localhost/api/html/client_management/minitor/minitor_index?search_word="+search_word+"search_select="+search_select+"channel_id_fk="+channel_id_fk -->
+		<!-- 通过用户昵称模糊查询 -->
+		function getSearch(){
+		var search_word=document.getElementById("search_word").value
+		<!-- window.location.href="http://localhost/api/html/client_management/minitor/minitor_index?search_word="+search_word -->
+		window.location.href=minitor_index_path()+"?search_word="+search_word
+		}
+		
+		<!-- 改变排序条件 -->
+		function change_user_select(){
+		var search_select=document.getElementById("search_select").value
+			<!-- window.location.href="http://localhost/api/html/client_management/minitor/minitor_index?search_select="+search_select -->
+			window.location.href=minitor_index_path()+"?search_select="+search_select
+		}
+		
+		<!-- 通过渠道商筛选 -->
+		function change_channel(){
+		var channel_id_fk=document.getElementById("channel_id_fk").value
+			<!-- window.location.href="http://localhost/api/html/client_management/minitor/minitor_index?channel_id_fk="+channel_id_fk -->
+			window.location.href=minitor_index_path()+"?channel_id_fk="+channel_id_fk
+		}
+	 <!-- 分页的函数 -->
+	function beginPostTestResult(page){
+	var max_page={* minitor_index_pager.max_page *}
+		<!-- window.location.href="http://localhost/api/html/client_management/minitor/minitor_index?page="+page -->
+		window.location.href=minitor_index_path()+"?page="+page
+		initPageInfo(page,max_page,"pager_index");
+	}
+
+
+</script>
+</body>
+</html>

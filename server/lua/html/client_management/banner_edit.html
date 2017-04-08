@@ -1,0 +1,416 @@
+ <!doctype html>
+<html class="no-js fixed-layout">  
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>德州扑克后台管理系统</title>
+  <meta name="description" content="这是一个 index 页面">
+  <meta name="keywords" content="index">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="Cache-Control" content="no-siteapp" />
+  <link rel="icon" type="image/png" href="/assets/i/favicon.png">
+  <link rel="apple-touch-icon-precomposed" href="/assets/i/app-icon72x72@2x.png">
+  <meta name="apple-mobile-web-app-title" content="Amaze UI" />
+  <link rel="stylesheet" href="/assets/css/amazeui.min.css"/>
+  <link rel="stylesheet" href="/assets/css/admin.css">
+
+	<script>
+	
+		var banner_id;
+		<!-- 判断编辑的banner类型和截取带过来的参数 -->
+			function GetQueryString(name){
+				 var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
+				 var r = window.location.search.substr(1).match(reg);
+				 if(r!=null)return  unescape(r[2]); return null;
+			}
+			function removeElement(_element){
+			 var _parentElement = _element.parentNode;
+			 if(_parentElement){
+					_parentElement.removeChild(_element);
+         }
+}
+			
+			 
+		<!-- alert(GetQueryString("id_pk")) -->
+		<!-- 初始化页面 使得选项卡选择应该的选项-->
+		function pre_func(){
+		banner_id=GetQueryString("id_pk")
+		var web_a=document.getElementsByName("a1")[0]
+		var anchor_a=document.getElementsByName("a2")[0]
+		var context_a=document.getElementsByName("a3")[0]
+					if (0==GetQueryString("banner_type")){
+						<!-- 0直播 -->
+						anchor_a.click()
+						removeElement(web_a)
+						removeElement(context_a)
+					}else if (1==GetQueryString("banner_type")){
+						<!-- 1视频 -->
+						context_a.click()
+						removeElement(web_a)
+						removeElement(anchor_a)
+					}else{
+						<!-- 2网页 -->
+						web_a.click()
+						removeElement(context_a)
+						removeElement(anchor_a)
+					}
+
+		}
+		
+		<!-- 根据banner_id进行ajax请求，将请求结果填到input表单中 -->
+		$.ajax({
+			type:"get", 
+			url:"http://localhost/api/banner/list", 
+			 data:{ 
+				"anchor_id_fk":anchor_id_fk
+				 },  
+			cache:false,
+			success:function(data,status){ 
+				var dateJson = JSON.parse(data)	 
+				alert(data)
+			}
+		 })
+			
+	</script>
+</head>
+<body onload="pre_func()">
+<!--[if lte IE 9]>
+<p class="browsehappy">你正在使用<strong>过时</strong>的浏览器，Amaze UI 暂不支持。 请 <a href="http://browsehappy.com/" target="_blank">升级浏览器</a>
+  以获得更好的体验！</p>
+<![endif]-->
+
+
+
+<div class="am-cf admin-main">
+  <!-- sidebar start -->
+	{(/html/part_html/sidebar.html)}
+  <!-- sidebar end -->
+
+  <!-- content start -->
+  <div class="admin-content">
+  {% for k,v in pairs(banner_edit_data) do %}
+    <div class="admin-content-body">
+      <div class="am-cf am-padding">
+        <div class="am-fl am-cf"><strong class="am-text-primary am-text-lg">客户端后台</strong> / <small>修改banner</small></div>
+      </div>
+	  	{(/html/part_html/header.html)}
+
+	<div class="am-tabs am-margin" data-am-tabs>
+      <ul class="am-tabs-nav am-nav am-nav-tabs">
+        <li class="am-active"><a href="#tab1" name="a1">修改网页banner</a></li>
+        <li><a href="#tab2" name="a2">修改直播banner</a></li>
+        <li><a href="#tab3" name="a3">修改内容banner</a></li>
+      </ul>
+
+      <div class="am-tabs-bd">
+	  
+        <div class="am-tab-panel am-fade am-in am-active" id="tab1">
+          <div class="am-g am-margin-top">
+            <div class="am-u-sm-4 am-u-md-2 am-text-right">banner类型</div>
+            <div class="am-u-sm-8 am-u-md-10">
+              <select data-am-selected="{btnSize: 'sm'}" disabled="disabled">
+                <option value="option1">网页</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="am-g am-margin-top">
+            <div class="am-u-sm-4 am-u-md-2 am-text-right">标题</div>
+            <div class="am-u-sm-8 am-u-md-10">
+              <div class="am-btn-group" data-am-button>
+                <input type="text" placeholder="标题内容" id="tab1_title" value="{* v.banner_title*}"></input>
+              </div>
+            </div>
+          </div>
+		  
+		  <div class="am-g am-margin-top">
+            <div class="am-u-sm-4 am-u-md-2 am-text-right">选择图片</div>
+            <div class="am-u-sm-8 am-u-md-10">
+				<input type="file" multiple id="tab1_img" value="{* v.banner_icon*}></input>
+            </div>
+          </div>
+		  
+		  
+		  <div class="am-g am-margin-top">
+              <div class="am-u-sm-4 am-u-md-2 am-text-right">url</div>
+              <div class="am-u-sm-8 am-u-md-4">
+                <input type="text" class="am-input-sm" id="tab1_url" value="{*v.url*}">
+              </div>
+              <div class="am-hide-sm-only am-u-md-6"></div>
+          </div>
+
+         <div class="am-g am-margin-top" name="show_time">
+            <div class="am-u-sm-4 am-u-md-2 am-text-right">
+              发布时间
+            </div>
+            <div class="am-u-sm-8 am-u-md-10">
+              <form action="" class="am-form am-form-inline">
+                <div class="am-form-group am-form-icon">
+                  <i class="am-icon-calendar"></i>
+                  <input type="datetime-local" class="am-form-field am-input-sm" placeholder="时间" id="tab3_online_time" value="">
+                </div>
+              </form>
+            </div>
+          </div>
+		  
+			<div class="am-margin">
+			  <button type="button" class="am-btn am-btn-primary am-btn-xs" onclick="add_banner_submit(this)">提交保存</button>
+			  <button type="button" class="am-btn am-btn-primary am-btn-xs" onclick="add_banner_cancel(this)">放弃保存</button>
+			</div>
+        </div>
+
+	
+	
+        <div class="am-tab-panel am-fade" id="tab2">
+		  <div class="am-g am-margin-top">
+            <div class="am-u-sm-4 am-u-md-2 am-text-right">banner类型</div>
+            <div class="am-u-sm-8 am-u-md-10">
+              <select data-am-selected="{btnSize: 'sm'}" disabled="disabled">
+                <option value="option1">直播</option>
+              </select>
+            </div>
+          </div>
+		  
+          <div class="am-g am-margin-top">
+            <div class="am-u-sm-4 am-u-md-2 am-text-right">标题</div>
+            <div class="am-u-sm-8 am-u-md-10">
+              <div class="am-btn-group" data-am-button>
+                <input type="text" placeholder="标题内容" id="tab2_title"></input>
+              </div>
+            </div>
+          </div>
+		  
+		  <div class="am-g am-margin-top">
+            <div class="am-u-sm-4 am-u-md-2 am-text-right">选择图片</div>
+            <div class="am-u-sm-8 am-u-md-10">
+				<input type="file" multiple id="tab2_img"></input>
+            </div>
+          </div>
+		  
+		   <div class="am-g am-margin-top">
+            <div class="am-u-sm-4 am-u-md-2 am-text-right">主播ID</div>
+            <div class="am-u-sm-8 am-u-md-10">
+              <div class="am-btn-group" data-am-button>
+                <input type="text" placeholder="请输入主播id" id="tab2_archo_id"></input>
+              </div>
+            </div>
+          </div>
+		  
+		<div class="am-g am-margin-top">
+            <div class="am-u-sm-4 am-u-md-2 am-text-right">上线时间</div>
+            <div class="am-u-sm-8 am-u-md-10">
+              <select data-am-selected="{btnSize: 'sm'}" id="tab2_online_type">
+                <option value="online_now">立即上线</option>
+                <option value="online_settime">定时上线</option>
+              </select>
+            </div>
+          </div>
+		  
+		 <div class="am-g am-margin-top" name="show_time">
+            <div class="am-u-sm-4 am-u-md-2 am-text-right">
+              发布时间
+            </div>
+            <div class="am-u-sm-8 am-u-md-10">
+              <form action="" class="am-form am-form-inline">
+                <div class="am-form-group am-form-icon">
+                  <i class="am-icon-calendar"></i>
+                  <input type="datetime-local" class="am-form-field am-input-sm" placeholder="时间" id="tab3_online_time">
+                </div>
+              </form>
+            </div>
+          </div>
+			<div class="am-margin">
+			  <button type="button" class="am-btn am-btn-primary am-btn-xs" onclick="add_banner_submit(this)">提交保存</button>
+			  <button type="button" class="am-btn am-btn-primary am-btn-xs" onclick="add_banner_cancel(this)">放弃保存</button>
+			</div>
+        </div>
+
+		
+		
+        <div class="am-tab-panel am-fade" id="tab3">
+		  <div class="am-g am-margin-top">
+            <div class="am-u-sm-4 am-u-md-2 am-text-right">banner类型</div>
+            <div class="am-u-sm-8 am-u-md-10">
+              <select data-am-selected="{btnSize: 'sm'}" disabled="disabled">
+                <option value="option1">内容</option>
+              </select>
+            </div>
+          </div>
+		  
+		  <div class="am-g am-margin-top">
+            <div class="am-u-sm-4 am-u-md-2 am-text-right">标题内容</div>
+            <div class="am-u-sm-8 am-u-md-10">
+              <div class="am-btn-group" data-am-button>
+                <input type="text" placeholder="标题内容" id="tab3_title"></input>
+              </div>
+            </div>
+          </div>
+		  
+		  <div class="am-g am-margin-top">
+            <div class="am-u-sm-4 am-u-md-2 am-text-right">选择图片</div>
+            <div class="am-u-sm-8 am-u-md-10">
+				<input type="file" multiple id="tab3_img"></input>
+            </div>
+          </div>
+		  
+		   <div class="am-g am-margin-top-sm">
+              <div class="am-u-sm-12 am-u-md-2 am-text-right admin-form-text">
+                内容描述
+              </div>
+              <div class="am-u-sm-12 am-u-md-10">
+			   <script id="editor" type="text/plain" style="width:1024px;height:500px;"></script> 
+               <textarea type="text" id="tab3_context"></textarea>
+              </div>
+            </div>
+			
+          <div class="am-g am-margin-top">
+            <div class="am-u-sm-4 am-u-md-2 am-text-right">上线时间</div>
+            <div class="am-u-sm-8 am-u-md-10">
+              <select data-am-selected="{btnSize: 'sm'}" id="tab3_online_type">
+                <option value="online_now">立即上线</option>
+                <option value="online_settime">定时上线</option>
+              </select>
+            </div>
+           </div>
+		  
+		 <div class="am-g am-margin-top" name="show_time">
+            <div class="am-u-sm-4 am-u-md-2 am-text-right">
+              发布时间
+            </div>
+            <div class="am-u-sm-8 am-u-md-10">
+              <form action="" class="am-form am-form-inline">
+                <div class="am-form-group am-form-icon">
+                  <i class="am-icon-calendar"></i>
+                  <input type="datetime-local" class="am-form-field am-input-sm" placeholder="时间" id="tab3_online_time">
+                </div>
+              </form>
+            </div>
+          </div>
+			<div class="am-margin">
+			  <button type="button" class="am-btn am-btn-primary am-btn-xs" onclick="add_banner_submit(this)">提交保存</button>
+			  <button type="button" class="am-btn am-btn-primary am-btn-xs" onclick="add_banner_cancel(this)">放弃保存</button>
+			</div>
+        </div>
+		
+    </div>
+
+    </div>
+
+
+
+	{(/html/part_html/foot.html)}
+  </div>
+  <!-- content end -->
+{%end%}
+</div>
+
+<a href="#" class="am-icon-btn am-icon-th-list am-show-sm-only admin-menu" data-am-offcanvas="{target: '#admin-offcanvas'}"></a>
+
+<!--[if lt IE 9]>
+<script src="http://libs.baidu.com/jquery/1.11.1/jquery.min.js"></script>
+<script src="http://cdn.staticfile.org/modernizr/2.8.3/modernizr.js"></script>
+<script src="/assets/js/amazeui.ie8polyfill.min.js"></script>
+<![endif]-->
+
+<!-- 百度富文本 -->
+    <script type="text/javascript" charset="utf-8" src="/assets/ueditor/ueditor.config.js"></script>
+    <script type="text/javascript" charset="utf-8" src="/assets/ueditor/ueditor.all.min.js"> </script>
+	<script type="text/javascript" charset="utf-8" src="/assets/ueditor/lang/zh-cn/zh-cn.js"></script>
+
+
+<!--[if (gte IE 9)|!(IE)]><!-->
+<script src="/assets/js/jquery-3.1.1.min.js"></script>
+<!--<![endif]-->
+<script src="/assets/js/amazeui.min.js"></script>
+<script src="/assets/js/app.js"></script>
+<script src="/assets/js/jquery.form.js"></script> 
+<script>
+
+	
+	<!-- 添加banner内容后，点击提交按钮 -->
+	function add_banner_submit(obj){
+		var banner_type
+		var banner_title
+		var banner_icon
+		var url
+		var online_time
+		var anchor_id_fk
+		var context
+		var banner_status
+		var table_index=obj.parentNode.parentNode.id
+		<!-- 数据库的banner_type 0主播1视频2网页。 页面的顺序 网页，主播，内容-->
+		if("tab1"==table_index){
+			 banner_type=2
+			 banner_title=document.getElementById("tab1_title").value
+			 banner_icon=document.getElementById("tab1_img").value	
+			 url=document.getElementById("tab1_url").value
+			 var e1=document.getElementById("tab1_online_type").value
+				if("online_settime"==e1){
+				 online_time=document.getElementById("tab1_online_time").value
+				}else{
+				 online_time=new Date().getTime()
+				 banner_status=1
+				}
+			
+		}else if("tab2"==table_index){
+			 banner_type=0
+			 banner_title=document.getElementById("tab2_title").value
+			 banner_icon=document.getElementById("tab2_img").value	
+			 anchor_id_fk=document.getElementById("tab2_archo_id").value
+			 var e1=document.getElementById("tab2_online_type").value
+				if("online_settime"==e1){
+				 online_time=document.getElementById("tab2_online_time").value
+				}else{
+				 online_time=new Date().getTime()
+				  banner_status=1
+				}
+		}else{
+			var banner_type=1
+			 banner_title=document.getElementById("tab3_title").value
+			 banner_icon=document.getElementById("tab3_img").value
+			 context=document.getElementById("tab3_context").value
+			 var e1=document.getElementById("tab3_online_type").value
+				if("online_settime"==e1){
+				 online_time=document.getElementById("tab3_online_time").value
+				}else{
+				 online_time=new Date().getTime()
+				  banner_status=1
+				}
+		}
+		
+		$.ajax({
+			type:"post", 
+			url:"http://localhost/api/banner/add", 
+			 data:{ 
+				"id_pk":banner_id,
+				"anchor_id_fk":anchor_id_fk,
+				 "banner_icon":banner_icon, 
+				 "banner_type":banner_type, 
+				 "banner_title":banner_title, 
+				 "online_time":online_time, 
+				 "banner_status":banner_status, 
+				 "url":url, 
+				 "context":context
+				 },  
+			cache:false,
+			success:function(data,status){ 
+				var dateJson = JSON.parse(data)	 
+				alert(data)
+				if(1==dateJson.code){ 
+					 alert("修改成功！") 
+				 }else{ 
+					 alert("修改失败！") 
+				} 
+			}
+		 })
+	
+	}
+	<!-- 添加banner内容后，点击取消按钮 -->
+	function add_banner_cancel(obj){
+	
+	
+	}
+</script>
+</body>
+</html>

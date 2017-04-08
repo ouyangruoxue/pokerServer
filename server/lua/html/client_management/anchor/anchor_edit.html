@@ -1,0 +1,243 @@
+ <!doctype html>
+<html class="no-js fixed-layout">  
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>德州扑克后台管理系统</title>
+  <meta name="description" content="这是一个 index 页面">
+  <meta name="keywords" content="index">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="Cache-Control" content="no-siteapp" />
+  <link rel="icon" type="image/png" href="/assets/i/favicon.png">
+  <link rel="apple-touch-icon-precomposed" href="/assets/i/app-icon72x72@2x.png">
+  <meta name="apple-mobile-web-app-title" content="Amaze UI" />
+  <link rel="stylesheet" href="/assets/css/amazeui.min.css"/>
+  <link rel="stylesheet" href="/assets/css/admin.css">
+</head>
+<body>
+<!--[if lte IE 9]>
+<p class="browsehappy">你正在使用<strong>过时</strong>的浏览器，Amaze UI 暂不支持。 请 <a href="http://browsehappy.com/" target="_blank">升级浏览器</a>
+  以获得更好的体验！</p>
+<![endif]-->
+
+
+
+<div class="am-cf admin-main">
+  <!-- sidebar start -->
+	{(/html/part_html/sidebar.html)}
+  <!-- sidebar end -->
+
+  <!-- content start -->
+  <div class="admin-content">
+    <div class="admin-content-body">
+      <div class="am-cf am-padding">
+        <div class="am-fl am-cf"><strong class="am-text-primary am-text-lg">客户端后台</strong> / <small>修改主播</small></div>
+      </div>
+	  	{(/html/part_html/header.html)}
+
+	<div class="am-tabs am-margin" data-am-tabs>
+      <ul class="am-tabs-nav am-nav am-nav-tabs">
+        <li class="am-active"><a href="#tab1" name="a1">修改主播</a></li>
+      </ul>
+		
+      <div class="am-tabs-bd">
+	          <div class="am-tab-panel am-fade am-in am-active" id="tab1">
+			{% for k,v in pairs(anchor_edit_user_info) do %}
+          <div class="am-g am-margin-top">
+            <div class="am-u-sm-4 am-u-md-2 am-text-right">主播昵称</div>
+            <div class="am-u-sm-8 am-u-md-10">
+              <div class="am-btn-group" data-am-button>
+                <input type="text" placeholder="请输入主播昵称" id="nickname" value="{*v.nickname*}"></input>
+              </div>
+            </div>
+          </div>
+		  
+		  <div class="am-g am-margin-top">
+            <div class="am-u-sm-4 am-u-md-2 am-text-right">主播头像</div>
+            <div class="am-u-sm-8 am-u-md-10">
+				<input type="file" id="head_icon"></input>
+            </div>
+          </div>
+		  {% end %}
+		  {% for k,v in pairs(anchor_edit_user) do%}
+		  <div class="am-g am-margin-top">
+              <div class="am-u-sm-4 am-u-md-2 am-text-right">手机号</div>
+              <div class="am-u-sm-8 am-u-md-4">
+                <input type="text" class="am-input-sm" placeholder="请输入手机号" id="phone_number" value="{*v.phone_number*}">
+              </div>
+              <div class="am-hide-sm-only am-u-md-6"></div>
+          </div>
+		  <div class="am-g am-margin-top">
+              <div class="am-u-sm-4 am-u-md-2 am-text-right">登录密码</div>
+              <div class="am-u-sm-8 am-u-md-4">
+			  <input type="hidden" id="b_psw" value="{*v.password*}">
+                <input type="password" class="am-input-sm" placeholder="请输入登录密码" id="password" value="{*v.password*}">
+              </div>
+              <div class="am-hide-sm-only am-u-md-6"></div>
+          </div>
+		  {% end %}
+		  {% for k,v in pairs(anchor_edit_anchor) do%}
+		  <div class="am-g am-margin-top">
+            <div class="am-u-sm-4 am-u-md-2 am-text-right">主播推流地址</div>
+            <div class="am-u-sm-8 am-u-md-10">
+              <div class="am-btn-group" data-am-button>
+                <input type="text" placeholder="请输入主播推流地址" id="anchor_push_ur" value="{*v.anchor_push_ur*}"></input>
+              </div>
+            </div>
+          </div>
+		  <div class="am-g am-margin-top">
+            <div class="am-u-sm-4 am-u-md-2 am-text-right">主播流地址</div>
+            <div class="am-u-sm-8 am-u-md-10">
+              <div class="am-btn-group" data-am-button>
+                <input type="text" placeholder="请输入主播流地址" id="anchor_url" value="{*v.anchor_url*}"></input>
+              </div>
+            </div>
+          </div>
+		  
+		   <div class="am-g am-margin-top">
+            <div class="am-u-sm-4 am-u-md-2 am-text-right">抽成比例</div>
+            <div class="am-u-sm-8 am-u-md-10">
+              <div class="am-btn-group" data-am-button>
+                <input type="text" placeholder="请输入抽成比例" id="cut_ratio" value="{*v.cut_ratio*}"></input>%
+              </div>
+            </div>
+          </div>
+		  {% end %}
+		  {% for k,v in pairs(anchor_edit_room) do%}
+		  <div class="am-g am-margin-top">
+            <div class="am-u-sm-4 am-u-md-2 am-text-right">房间ID</div>
+            <div class="am-u-sm-8 am-u-md-10">
+              <div class="am-btn-group" data-am-button>
+                <input type="text" id="room_id" disabled="disabled" value="{*v.id_pk*}"></input>
+              </div>
+            </div>
+          </div>
+		  {% end %}
+		  {% for k,v in pairs(anchor_edit_anchor) do%}
+		  <div class="am-g am-margin-top">
+            <div class="am-u-sm-4 am-u-md-2 am-text-right">渠道商id</div>
+            <div class="am-u-sm-8 am-u-md-10">
+              <div class="am-btn-group" data-am-button>
+                <input type="text" id="channel_business" disabled="disabled" value="{*v.channel_business*}"></input>
+              </div>
+            </div>
+          </div>
+
+		    <div class="am-g am-margin-top">
+            <div class="am-u-sm-4 am-u-md-2 am-text-right">签约时间</div>
+            <div class="am-u-sm-8 am-u-md-10">
+              <div class="am-btn-group" data-am-button>
+                <input type="text" id="signing_time" disabled="disabled" value="{*v.signing_time*}"></input>
+              </div>
+            </div>
+          </div>
+
+		  <div class="am-g am-margin-top">
+            <div class="am-u-sm-4 am-u-md-2 am-text-right">主播ID</div>
+            <div class="am-u-sm-8 am-u-md-10">
+              <div class="am-btn-group" data-am-button>
+                <input type="text" id="anchor_id" disabled="disabled" value="{*v.id_pk*}"></input>
+              </div>
+            </div>
+          </div>
+
+		  <div class="am-g am-margin-top">
+            <div class="am-u-sm-4 am-u-md-2 am-text-right">直播时长</div>
+            <div class="am-u-sm-8 am-u-md-10">
+              <div class="am-btn-group" data-am-button>
+                <input type="text" id="anchor_live_time" disabled="disabled" value="{*v.anchor_live_time*}"></input>
+              </div>
+            </div>
+          </div>
+		  <div class="am-g am-margin-top">
+            <div class="am-u-sm-4 am-u-md-2 am-text-right">最高在线人数</div>
+            <div class="am-u-sm-8 am-u-md-10">
+              <div class="am-btn-group" data-am-button>
+                <input type="text" id="highest_count" disabled="disabled" value="{*v.highest_count*}"></input>
+              </div>
+            </div>
+          </div>
+		  {% end %}
+			<div class="am-margin">
+			  <button type="button" class="am-btn am-btn-primary am-btn-xs" onclick="edit_anchor_submit()">提交保存</button>
+			</div>
+        </div>
+	
+		
+    </div>
+
+    </div>
+
+
+
+	{(/html/part_html/foot.html)}
+  </div>
+  <!-- content end -->
+
+</div>
+
+<a href="#" class="am-icon-btn am-icon-th-list am-show-sm-only admin-menu" data-am-offcanvas="{target: '#admin-offcanvas'}"></a>
+
+<!--[if lt IE 9]>
+<script src="http://libs.baidu.com/jquery/1.11.1/jquery.min.js"></script>
+<script src="http://cdn.staticfile.org/modernizr/2.8.3/modernizr.js"></script>
+<script src="/assets/js/amazeui.ie8polyfill.min.js"></script>
+<![endif]-->
+
+<!-- 百度富文本 -->
+    <script type="text/javascript" charset="utf-8" src="/assets/ueditor/ueditor.config.js"></script>
+    <script type="text/javascript" charset="utf-8" src="/assets/ueditor/ueditor.all.min.js"> </script>
+	<script type="text/javascript" charset="utf-8" src="/assets/ueditor/lang/zh-cn/zh-cn.js"></script>
+
+
+<!--[if (gte IE 9)|!(IE)]><!-->
+<script src="/assets/js/jquery-3.1.1.min.js"></script>
+<!--<![endif]-->
+<script src="/assets/js/amazeui.min.js"></script>
+<script src="/assets/js/app.js"></script>
+<script src="/assets/js/jquery.form.js"></script> 
+<script src="/assets/js/mycomment.js"></script>
+<script>
+
+	
+	<!-- 修改主播内容后点击提交按钮 -->
+	function edit_anchor_submit(){
+	var id_pk=GetQueryString("id_pk")
+		var nickname=document.getElementById("nickname").value
+		var head_icon=document.getElementById("head_icon").value
+		var phone_number=document.getElementById("phone_number").value
+		var password=document.getElementById("password").value
+		var b_psw=document.getElementById("b_psw").value
+		if(b_psw==password){
+			var rel_pass=password
+		}else{
+			var rel_pass=hex_md5(password)
+		}
+		
+		var anchor_push_ur=document.getElementById("anchor_push_ur").value
+		var anchor_url=document.getElementById("anchor_url").value
+		var cut_ratio=document.getElementById("cut_ratio").value
+		$.ajax({
+			type:"post", 
+			url:"http://localhost/api/html/client_management/anchor/anchor_edit_after", 
+			data:{
+				"id_pk":id_pk,
+				"nickname":nickname,
+				 "head_icon":head_icon, 
+				 "phone_number":phone_number, 
+				 "password":password, 
+				 "anchor_push_ur":anchor_push_ur, 
+				 "anchor_url":anchor_url, 
+				 "cut_ratio":cut_ratio
+			},  
+			cache:false,
+			success:function(data,status){ 
+				alert("修改成功！")
+			}
+		 })
+	
+	}
+</script>
+</body>
+</html>

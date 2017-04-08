@@ -1,0 +1,32 @@
+2017/04/08 12:03:02 [error] 8356#8268: *2 lua tcp socket connect timed out, context: ngx.timer
+2017/04/08 12:03:03 [error] 8356#8268: *2 lua tcp socket connect timed out, context: ngx.timer
+2017/04/08 12:03:04 [error] 8356#8268: *2 lua tcp socket connect timed out, context: ngx.timer
+2017/04/08 12:03:05 [error] 8356#8268: *2 lua tcp socket connect timed out, context: ngx.timer
+2017/04/08 12:03:06 [error] 8356#8268: *2 lua tcp socket connect timed out, context: ngx.timer
+2017/04/08 12:03:07 [error] 8356#8268: *2 lua tcp socket connect timed out, context: ngx.timer
+2017/04/08 12:03:08 [error] 8356#8268: *2 lua tcp socket connect timed out, context: ngx.timer
+2017/04/08 12:03:09 [error] 8356#8268: *2 lua tcp socket connect timed out, context: ngx.timer
+2017/04/08 12:03:28 [error] 8356#8268: unexpected response for api.netease.im
+2017/04/08 12:03:28 [error] 8356#8268: unexpected response for api.netease.im
+2017/04/08 12:07:16 [error] 8356#8268: *76 [lua] ws.lua:76: push --------------------1--------, client: 127.0.0.1, server: , request: "GET //chat_room/ws?userCode=2&anchor_user_code=3 HTTP/1.1", host: "localhost"
+2017/04/08 12:07:56 [notice] 9984#9988: signal process started
+2017/04/08 12:07:56 [error] 8356#8268: unexpected response for api.netease.im
+2017/04/08 12:07:56 [error] 8356#8268: unexpected response for api.netease.im
+2017/04/08 12:07:56 [error] 8356#8268: *90 [lua] chat_room.lua:559: failed to create timer: process exiting, context: ngx.timer
+2017/04/08 12:07:56 [error] 8356#8268: *91 [lua] chat_room.lua:559: failed to create timer: process exiting, context: ngx.timer
+2017/04/08 12:08:11 [error] 10020#10064: *98 [lua] ws.lua:76: push --------------------1--------, client: 127.0.0.1, server: , request: "GET //chat_room/ws?userCode=2&anchor_user_code=3 HTTP/1.1", host: "localhost"
+2017/04/08 12:08:22 [error] 10020#10064: unexpected response for api.netease.im
+2017/04/08 12:08:22 [error] 10020#10064: unexpected response for api.netease.im
+2017/04/08 12:09:51 [error] 10020#10064: *98 lua tcp socket read timed out, client: 127.0.0.1, server: , request: "GET //chat_room/ws?userCode=2&anchor_user_code=3 HTTP/1.1", host: "localhost"
+2017/04/08 12:11:31 [error] 10020#10064: *98 lua tcp socket read timed out, client: 127.0.0.1, server: , request: "GET //chat_room/ws?userCode=2&anchor_user_code=3 HTTP/1.1", host: "localhost"
+2017/04/08 12:13:11 [error] 10020#10064: *98 lua tcp socket read timed out, client: 127.0.0.1, server: , request: "GET //chat_room/ws?userCode=2&anchor_user_code=3 HTTP/1.1", host: "localhost"
+2017/04/08 12:14:51 [error] 10020#10064: *98 lua tcp socket read timed out, client: 127.0.0.1, server: , request: "GET //chat_room/ws?userCode=2&anchor_user_code=3 HTTP/1.1", host: "localhost"
+2017/04/08 12:16:31 [error] 10020#10064: *98 lua tcp socket read timed out, client: 127.0.0.1, server: , request: "GET //chat_room/ws?userCode=2&anchor_user_code=3 HTTP/1.1", host: "localhost"
+2017/04/08 12:18:11 [error] 10020#10064: *98 lua tcp socket read timed out, client: 127.0.0.1, server: , request: "GET //chat_room/ws?userCode=2&anchor_user_code=3 HTTP/1.1", host: "localhost"
+2017/04/08 12:19:51 [error] 10020#10064: *98 lua tcp socket read timed out, client: 127.0.0.1, server: , request: "GET //chat_room/ws?userCode=2&anchor_user_code=3 HTTP/1.1", host: "localhost"
+2017/04/08 12:21:31 [error] 10020#10064: *98 lua tcp socket read timed out, client: 127.0.0.1, server: , request: "GET //chat_room/ws?userCode=2&anchor_user_code=3 HTTP/1.1", host: "localhost"
+2017/04/08 12:23:11 [error] 10020#10064: *98 lua tcp socket read timed out, client: 127.0.0.1, server: , request: "GET //chat_room/ws?userCode=2&anchor_user_code=3 HTTP/1.1", host: "localhost"
+2017/04/08 12:24:51 [error] 10020#10064: *98 lua tcp socket read timed out, client: 127.0.0.1, server: , request: "GET //chat_room/ws?userCode=2&anchor_user_code=3 HTTP/1.1", host: "localhost"
+2017/04/08 12:26:31 [error] 10020#10064: *98 lua tcp socket read timed out, client: 127.0.0.1, server: , request: "GET //chat_room/ws?userCode=2&anchor_user_code=3 HTTP/1.1", host: "localhost"
+2017/04/08 12:28:11 [error] 10020#10064: *98 lua tcp socket read timed out, client: 127.0.0.1, server: , request: "GET //chat_room/ws?userCode=2&anchor_user_code=3 HTTP/1.1", host: "localhost"
+2017/04/08 12:29:51 [error] 10020#10064: *98 lua tcp socket read timed out, client: 127.0.0.1, server: , request: "GET //chat_room/ws?userCode=2&anchor_user_code=3 HTTP/1.1", host: "localhost"

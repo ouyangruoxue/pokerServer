@@ -1,0 +1,190 @@
+<!doctype html>
+<html class="no-js fixed-layout">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>德州扑克后台管理系统</title>
+  <meta name="description" content="这是一个 index 页面">
+  <meta name="keywords" content="index">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="Cache-Control" content="no-siteapp" />
+  <link rel="icon" type="image/png" href="/assets/i/favicon.png">
+  <link rel="apple-touch-icon-precomposed" href="/assets/i/app-icon72x72@2x.png">
+  <meta name="apple-mobile-web-app-title" content="Amaze UI" />
+  <link rel="stylesheet" href="/assets/css/amazeui.min.css"/>
+  <link rel="stylesheet" href="/assets/css/admin.css">
+</head>
+<body onload='initPageInfo({*gift_index_pager.curr_page*},{*gift_index_pager.max_page*},"pager_index")'>
+<!--[if lte IE 9]>
+<p class="browsehappy">你正在使用<strong>过时</strong>的浏览器，Amaze UI 暂不支持。 请 <a href="http://browsehappy.com/" target="_blank">升级浏览器</a>
+  以获得更好的体验！</p>
+<![endif]-->
+	{(/html/part_html/header.html)}
+
+<div class="am-cf admin-main">
+  <!-- sidebar start -->
+	{(/html/part_html/sidebar.html)}
+  <!-- sidebar end -->
+
+  <!-- content start -->
+  <div class="admin-content">
+    <div class="admin-content-body">
+      <div class="am-cf am-padding">
+        <div class="am-fl am-cf"><strong class="am-text-primary am-text-lg">客户端后台</strong> / <small>礼物类型管理</small></div>
+      </div>
+	  
+      <div class="am-g">
+		<div class="am-u-sm-12 am-u-md-6">
+          <div class="am-btn-toolbar">
+            <div class="am-btn-group am-btn-group-xs">
+              <button type="button" class="am-btn am-btn-default" onclick="add_gift()">
+				<span class="am-icon-plus"></span> 新增
+			  </button>
+            </div>
+          </div>
+        </div> 
+      </div>
+	  
+	    <!-- 初始化页面时进行的分页 -->
+	<div class="am-g">
+        <div class="am-u-sm-12">
+          <form class="am-form">
+            <table class="am-table am-table-striped am-table-hover table-main">
+              <thead>
+              <tr>
+                <!-- <th class="table-check"><input type="checkbox" /></th> -->
+				<th class="table-id">编号</th>
+				<th class="table-title">礼物图标</th>
+				<th class="table-type">礼物名称</th>
+				<th class="table-author am-hide-sm-only">礼物描述</th>
+				<th class="table-date am-hide-sm-only">礼物价值</th>
+				<th class="table-date am-hide-sm-only">礼物有效期</th>
+				<th class="table-date am-hide-sm-only">礼物创建时间</th>
+				<th class="table-date am-hide-sm-only">礼物过期时间</th>
+				<th class="table-date am-hide-sm-only">是否参与主播分红结算</th>
+				<th class="table-set">操作</th>
+              </tr>
+              </thead>
+              <tbody>
+				{% for k,v in pairs(gift_index_data) do%}
+				<tr id="{*v.id_pk*}"> 
+					 <td>{* k *}</input></td> 
+					  <td background="{*v.gift_logo*}"></td> 
+					  <td>{*v.gift_name*}</td>  
+					  <td class="am-hide-sm-only">{*v.gift_description*}</td>
+					  <td class="am-hide-sm-only">{*v.gift_value*}</td>  
+					  <td class="am-hide-sm-only">{*v.gift_valid*}</td>
+					  <td class="am-hide-sm-only">{*v.gift_create_time*}</td>
+					  <td class="am-hide-sm-only">{*v.gift_invalid_time*}</td>
+					 <td class="am-hide-sm-only">
+					  {% if v.is_join_share==0 then %}
+						不参与分红
+					  {% elseif v.is_join_share==1 then  %}
+						参与分红
+					  {% end %}
+					  </td>  
+					  <td>  
+					    <div class="am-btn-toolbar">  
+						  <div class="am-btn-group am-btn-group-xs">  
+						    <div class="am-btn am-btn-default am-btn-xs am-text-secondary" onclick="edit_gift(this)">
+								<input type="hidden" value="{*v.id_pk*}"></input><span class="am-icon-pencil-square-o"></span> 
+								编辑
+							</div>  
+						    <div class="am-btn am-btn-default am-btn-xs am-text-danger am-hide-sm-only" onclick="delete_gift(this)">
+								<input type="hidden" value="{*v.id_pk*}"/><span class="am-icon-pencil-square-o"></span><span class="am-icon-trash-o"></span> 
+								删除
+							</div>  
+						  </div>  
+					    </div>  
+					  </td>  
+				</tr>  
+			   {% end %}
+              </tbody>
+            </table>
+           <div class="am-cf" id="pager_index">
+              <!-- 共 15 条记录 -->
+              <!-- <div class="am-fr"> -->
+                <!-- <ul class="am-pagination"> -->
+                  <!-- <li class="am-disabled"><a href="#">?</a></li> -->
+                  <!-- <li class="am-active"><a href="#">1</a></li> -->
+                  <!-- <li><a href="#">2</a></li> -->
+                  <!-- <li><a href="#">3</a></li> -->
+                  <!-- <li><a href="#">4</a></li> -->
+                  <!-- <li><a href="#">5</a></li> -->
+                  <!-- <li><a href="#">?</a></li> -->
+                <!-- </ul> -->
+              <!-- </div> -->
+            </div> 
+			
+            <hr />
+            <p>注：.....</p>
+          </form>
+        </div>
+
+      </div>
+
+	{(/html/part_html/foot.html)}
+  </div>
+  <!-- content end -->
+
+</div>
+
+<a href="#" class="am-icon-btn am-icon-th-list am-show-sm-only admin-menu" data-am-offcanvas="{target: '#admin-offcanvas'}"></a>
+
+<!--[if lt IE 9]>
+<script src="http://libs.baidu.com/jquery/1.11.1/jquery.min.js"></script>
+<script src="http://cdn.staticfile.org/modernizr/2.8.3/modernizr.js"></script>
+<script src="/assets/js/amazeui.ie8polyfill.min.js"></script>
+<![endif]-->
+
+<!--[if (gte IE 9)|!(IE)]><!-->
+<script src="/assets/js/jquery-3.1.1.min.js"></script>
+<!--<![endif]-->
+<script src="/assets/js/amazeui.min.js"></script>
+<script src="/assets/js/mycomment.js"></script>
+<script>
+	<!-- 跳转到添加礼物类型界面 -->
+   function add_gift(){
+		<!-- window.location.href="http://localhost/api/html/client_management/gift/gift_add" -->
+		window.location.href=gift_add_path()
+	}
+	<!-- 编辑礼物类型界面 -->
+	 function edit_gift(obj){
+	 var gift_id=obj.getElementsByTagName("input")[0].value 
+		 <!-- window.location.href="http://localhost/api/html/client_management/gift/gift_edit?id_pk="+gift_id -->
+		 window.location.href=gift_edit_path()+"?id_pk="+gift_id
+	 }
+	<!-- 删除对应的礼物类型 -->
+	 function delete_gift(obj){
+	 var gift_id=obj.getElementsByTagName("input")[0].value 
+			$.ajax({
+			type:"post", 
+			<!-- url:"http://localhost/api/gift/delete_gifttype",  -->
+			url:gift_delete_path(),
+			 data:{ 
+				"id_pk":gift_id
+				 },  
+			cache:false,
+			success:function(data,status){ 
+				var dateJson = JSON.parse(data)	 
+				 if(1==dateJson.code){ 
+					 alert("删除成功！") 
+					 window.location.reload();
+				 }else{ 
+					 alert("删除失败！")
+				} 
+			}
+		 })
+	 }
+	 
+	<!-- 分页的函数 -->
+	function beginPostTestResult(page){
+	var max_page={* gift_index_pager.max_page *}
+		<!-- window.location.href="http://localhost/api/html/client_management/gift/gift_index?page="+page -->
+		window.location.href=gift_index_path()+"?page="+page
+		initPageInfo(page,max_page,"pager_index");
+	}
+</script>
+</body>
+</html>

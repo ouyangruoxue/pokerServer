@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>使用html5特性进行ajax上传</title>
+    
+    <meta http-equiv="keywords" content="keyword1,keyword2,keyword3">
+    <meta http-equiv="description" content="this is my page">
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <script type="text/javascript" src="js/jquery-3.1.1.min.js"></script>
+    <script type="text/javascript" src="js/bootstrap.min.js"></script>
+     <script type="text/javascript" src="js/encode_help.js"></script>
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+    <style type="text/css">
+        body{
+            padding:20px;
+        }
+    </style>
+    <script type="text/javascript">
+        
+        var premark=true;
+        var uploadmsg_fromserver = "";
+        function upload(){
+            if(!window.FormData){
+                $("#msg").html("你的浏览器不支持。");
+                $(".alert").show();
+            }
+            //获得原生的form表单对象，等价于document.forms[0]
+            var form = document.getElementById("uploadForm");
+            //单个文件超过400MB就不再上传
+            var hasError = false;
+            $("input[type='file']", form).each(function(index,file){
+                if(file.files.length > 0){
+                    if(file.files[0].size > 400*1024*1024){
+                        $("#msg").html("单个文件不能超过20MB。");
+                        $(".alert").show();
+                        hasError = true;
+                        return;
+                    }
+                }
+            });
+            if(hasError){
+                return;
+            }
+            //构造FormData对象用于发送数据
+           
+            var xhr = new XMLHttpRequest();
+            var postaction = form.action+"?usercode=zhangliutong&token=testtoken&timestamp=20170228"
+
+            var formData;
+            if( premark == false) // 预判断一次
+            {
+                postaction += "&opt=pre"
+                xhr.open("post", postaction, true);
+                //设置请求超时
+                xhr.upload.timeout = 2000;
+                xhr.upload.ontimeout = function (event){
+                    $("#msg").html("请求超时！");
+                    $(".alert").show();
+                };
+ //上传完成 
+                xhr.onreadystatechange = function(event) {
+                    if( event.target.readyState == 4 && event.target.status == 200){
+                    window.console.log("files---------"+document.getElementById("file1").files.length);
+
+                    for(var i=0;i<document.getElementById("file1").files.length;i++)
+                    {
+                       var file=document.getElementById("file1").files[i];
+                       window.console.log("file name ",file.name)
+                    }
+                    document.getElementById("file1").files.remove;
+                    uploadmsg_fromserver=event.target.responseText;
+                    var msgserver = JSON.parse(uploadmsg_fromserver);
+                    postaction = postaction + "&tokenex="+msgserver.tokenex;
+                    window.console.log("server uploadaction is "+postaction)
+                    premark = true;
+
+                  }
+                } 
+
+                //遍历生成需要的json格式
+                formData = new FormData(); 
+                var msg = document.getElementById("uploadmsg").value;
+                if(msg == "")
+                {
+                   alert("操作错误,请刷新界面!")
+                   return ;
+                } 
+                window.console.log("pre :"+msg);
+                formData.append("uploadmsg", msg); 
+            }
+            else
+            {
+
+                xhr.open("post", postaction, true);
+                //设置请求超时
+                xhr.upload.timeout = 2000;
+                xhr.upload.ontimeout = function (event){
+                    $("#msg").html("请求超时！");
+                    $(".alert").show();
+                };
+
+                //设置请求超时
+                var formData = new FormData(form);
+                var msg = document.getElementById("uploadmsg").value;
+                //上传的文件信息 用于存储到用户文件记录表中
+                formData.append("uploadmsg", msg);  
+ 
+                //添加progress事件
+                xhr.upload.addEventListener("progress",function(e){
+                    $(".progress-bar").addClass("active");
+                    var howMuch = e.loaded / e.total;
+                    var p = parseFloat((howMuch * 100).toFixed(2))+"%";
+                    $(".progress-bar").css("width",p).html(p);
+                }, false);
+                //上传完成
+                xhr.upload.addEventListener("load", function(event){
+                    $(".progress-bar").removeClass("active");
+                    $("#msg").html("上传完成！");
+                    $(".alert").show();
+                    premark = true;
+                    uploadmsg_fromserver = event
+
+                }, false);
+
+                xhr.upload.addEventListener("error", function(event){
+                    $(".progress-bar").removeClass("active");
+                    $("#msg").html("上传出错！");
+                    $(".alert").show();
+                }, false);
+
+                xhr.upload.addEventListener("abort", function(event){
+                      $(".progress-bar").removeClass("active");
+                      $("#msg").html("您取消了本次上传。");
+                      $(".alert").show();
+                  }, false);
+
+                  formData = new FormData(form);   
+                  window.console.log("upload :");
+            }  
+            xhr.send(formData);
+        }
+        
+        //重置
+        function test(){
+            $("input[type='file']", document.forms[0]).each(function(index,file){
+                file.value = null;
+            });
+        }
+    </script>
+
+  </head>
+  
+  <body>
+      <div class="panel panel-primary">
+      <div class="panel-heading">
+        <h3 class="panel-title">文件上传</h3>
+      </div>
+      <div class="panel-body">
+          <div class="alert alert-danger alert-dismissable" style="display:none;">
+           <button type="button" class="close" onclick="$('.alert').hide();" 
+              aria-hidden="true">
+              &times;
+           </button>
+           <span id="msg">
+           错误！请进行一些更改。</span>
+        </div>
+        <form id="uploadForm" action="/files/upload" method="post" enctype="multipart/form-data">
+ 
+            <input id= "uploadmsg" name="uploadmsg" type="hidden" />
+
+            <div class="input-group">
+              <span class="input-group-addon" id="basic-addon1">文件一</span>
+              <input id = "file1" name="file1" type="file" class="form-control" aria-describedby="basic-addon1" multiple />
+            </div>
+            <p></p>
+           
+            <!--
+            <div class="input-group">
+              <span class="input-group-addon" id="basic-addon2">文件二</span>
+              <input id="file2" name="file2" type="file" class="form-control" aria-describedby="basic-addon2" />
+            </div>
+            <p></p>
+            <div class="input-group">
+              <span class="input-group-addon" id="basic-addon3">文件三</span>
+              <input name="file3" type="file" class="form-control" aria-describedby="basic-addon3" />
+            </div>
+            <p></p>
+          -->
+            <div class="progress">
+              <div class="progress-bar progress-bar-danger progress-bar-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100" style="width: 0%">
+                0%
+              </div>
+            </div>
+            </form>
+            <div style="text-align: center;">
+                <button type="button" onclick="upload()" class="btn btn-primary" autocomplete="off">
+                  上传
+                </button>
+                <button type="button" onclick="test()" class="btn btn-primary" autocomplete="off">
+                  重置
+                </button>
+            </div>
+      </div>
+
+      <input type="file" id="testfile" name="testfile"  multiple/>
+ <script>
+  var sha1map;
+  
+    document.getElementById("file1").onchange=function(){ 
+   
+    var file_numbers= this.files.length;
+//检验是否为图像文件  
+// var file = document.getElementById("testfile").files[0];  
+//     if(!/image\/\w+/.test(file.type)){  
+//         alert("看清楚，这个需要图片！");  
+//         return false;  
+//     }  
+    var curIndex=0;
+    var json = []; 
+    for(var index = 0 ; index < file_numbers;index++)
+    {
+      var file = this.files[index]; 
+
+      var reader = new FileReader();  
+      //将文件以Data URL形式读入页面  
+      
+      reader.onload = function(e){   
+        var data = new Uint8Array(reader.result);
+        var result = sha1(data);
+        var hex = Array.prototype.map.call(result,function(e){
+          return (e < 16 ? "0" : "")+e.toString(16);
+        }).join("");
+        //alert("filename"+file.name+" "+hex);
+        //sha1map[file.name]=hex
+        var row1 = {};
+        row1.name = file.name;
+        row1.sha1_code = hex;
+        json.push(row1) 
+        if(curIndex == file_numbers - 1)
+        {
+          var jsonStr = JSON.stringify(json); 
+          document.getElementById("uploadmsg").value=jsonStr;
+          //--然后进行上传上传
+        }
+        curIndex++;
+      }  
+ 
+      reader.readAsArrayBuffer(file);
+    } 
+};
+</script>
+    </div>
+  </body>
+</html>
