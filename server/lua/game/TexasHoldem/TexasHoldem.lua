@@ -48,6 +48,23 @@ _TexasHoldem.CardTypeDescription =
     "同花顺(straight flush)：由五张连张同花色的牌组成",
     "皇家同花顺(royal flush)：由AKQJ10五张组成，并且这5张牌花色相同",
 }
+
+_TexasHoldem.CardTypeSimpleDescription = 
+{
+    "高牌",
+    "一对",
+    "两对",
+    "3条",
+    "顺子",
+    "同花",
+    "满堂红",
+    "4条",
+    "同花顺",
+    "皇家同花顺",
+}
+
+
+
 local CardType = _TexasHoldem.CardType;
 
 --[[

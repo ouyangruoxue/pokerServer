@@ -13,28 +13,28 @@ local _NNPoker = {};
 十小 > 炸弹 >  五花 > 四花 > 牛牛 > 有分 > 没分；
 ]]
 _NNPoker.NNCardType = {
-	LessTen = 14,	-- 10小
-	Bomb = 13 ,   -- 炸弹
-	FiveJinhua = 12, -- 五金花
-	FourJinhua = 11, -- 银花
-	Ten_Niu = 10, 
-	Nine_Niu = 9,
-	Eight_Niu = 8,
-	Seven_Niu = 7,
-	Six_Niu = 6,
-	Five_Niu = 5,
-	Four_Niu = 4,
-	Three_Niu = 3,
-	Tow_Niu = 2,
-	One_Niu = 1,
-	NoNiu = 0,		-- 没牛
+	LessTen = 15,	-- 10小
+	Bomb = 14 ,   -- 炸弹
+	FiveJinhua = 13, -- 五金花
+	FourJinhua = 12, -- 银花
+	Ten_Niu = 11, 
+	Nine_Niu = 10,
+	Eight_Niu = 9,
+	Seven_Niu = 8,
+	Six_Niu = 7,
+	Five_Niu = 6,
+	Four_Niu = 5,
+	Three_Niu = 4,
+	Tow_Niu = 3,
+	One_Niu = 2,
+	NoNiu = 1,		-- 没牛
 }
 
 
 
 _NNPoker.CardTypeDescription = 
 {
-    "普通牌,没有牛牌",
+    "普通牌",
     "一牛", "二牛", "三牛", "四牛", "五牛", "六牛", "七牛", "八牛", "九牛","牛牛"
     ,"银花","金花","炸弹","10小" 
 }

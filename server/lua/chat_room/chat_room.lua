@@ -620,7 +620,7 @@ _Chatroom.turnon  = function (premature ,_self)
     if tonumber(_self.game_type) == 1 then
 
     	for i = 1, table.getn(_self.gamePlayMap), 1 do
-        	_self.gamePlayMap[i].cards, _self.gamePlayMap[i].cardype = _TexasHoldem.getUsersMaxCards(_self.gamePlayMap[i].handCards, _self.publicCards);
+        	_self.gamePlayMap[i].cards, _self.gamePlayMap[i].cardType = _TexasHoldem.getUsersMaxCards(_self.gamePlayMap[i].handCards, _self.publicCards);
    		end
    		-- 比牌
    		for i=2,table.getn(_self.gamePlayMap),1 do
@@ -663,11 +663,30 @@ _Chatroom.turnon  = function (premature ,_self)
     --发送牌局结果到云信聊天室
     
     local neteaseMsg = {}
+    local returnResult = {}
+    for i = 1,table.getn(_self.gamePlayMap),1 do
+        local gamePlayTempMap = _self.gamePlayMap[i]
+        local returnResultindex = {}
+        returnResultindex.cardType = gamePlayTempMap.cardType
+        returnResultindex.name = gamePlayTempMap.name
+        returnResultindex.game_result = gamePlayTempMap.game_result
+        returnResultindex.isBanker = gamePlayTempMap.isBanker
+        if tonumber(_self.game_type) == 1 then
 
-    neteaseMsg.data = _self.gamePlayMap
+            returnResultindex.cardTypeDec = _TexasHoldem.CardTypeSimpleDescription[tonumber(gamePlayTempMap.cardType)]
 
+            elseif tonumber(_self.game_type) == 2 then
+
+            returnResultindex.cardTypeDec = _NNPoker.CardTypeDescription[tonumber(gamePlayTempMap.cardType)]
+
+            else
+        
+        end   
+        table.insert(returnResult,returnResultindex)
+    end 
+
+    neteaseMsg.data = returnResult
     neteaseMsg.type = 4
-
     _self:sendMsgToNetease(neteaseMsg)
 
 
@@ -726,7 +745,7 @@ _Chatroom.settlement  = function (premature ,_self)
       _self:sendMsgForBetResult()
     
     end    
-    
+
      -- if tonumber(anchor_status) == 0 or tonumber(room_status) == 0 then
      --    _self.isclose = true
      --     return
@@ -985,21 +1004,26 @@ end
 --[[
 	--创建机器人玩家
 --]]
-function _Chatroom:ceateRobotPlayer(seed)               
+function _Chatroom:ceateRobotPlayer(index)               
  --随机姓名与性别
- local firstname = nil
- local lastname = nil 
- local robotname = nil
- local randomsex = math.random(1,2)
- if randomsex == 1 then
- 	 firstname = randomname.male_first_name[math.random(1,#randomname.male_first_name)]
- 	 lastname = randomname.last_names[math.random(1,#randomname.last_names)]
- 	 robotname = firstname.." "..lastname
- 	else
- 	  firstname = randomname.female_first_name[math.random(1,#randomname.female_first_name)]
- 	  lastname = randomname.last_names[math.random(1,#randomname.last_names)]
- 	  robotname = firstname.." "..lastname	
- end
+ --local firstname = nil
+ --local lastname = nil 
+ --local robotname = nil
+ --local randomsex = math.random(1,2)
+ -- if randomsex == 1 then
+ -- 	 firstname = randomname.male_first_name[math.random(1,#randomname.male_first_name)]
+ -- 	 lastname = randomname.last_names[math.random(1,#randomname.last_names)]
+ -- 	 robotname = firstname.." "..lastname
+ -- 	else
+ -- 	  firstname = randomname.female_first_name[math.random(1,#randomname.female_first_name)]
+ -- 	  lastname = randomname.last_names[math.random(1,#randomname.last_names)]
+ -- 	  robotname = firstname.." "..lastname	
+ -- end
+
+local gamename = {"庄","福","禄","寿"}
+
+local robotname = gamename[index]
+
  --创建机器人code
  local usercode = redis_lock.generateUniqueUserCode("wj_game_robot_usercode",1)
 
