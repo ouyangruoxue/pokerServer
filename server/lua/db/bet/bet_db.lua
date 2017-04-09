@@ -85,11 +85,11 @@ end
 	@parm stake_type 押注类型
 --]]
 function _M.insertPlayerStake(playerlist,stake_type)
-	local pokeStakekey = nil
+	local pokeStakekey = nil 
 	if tonumber(stake_type) == 1 then
-		pokeStakekey = {"stake_user_code","stake","player_account_balance","multiple","win_or_lose","game_record_id_fk","game_record_vplayer","stake_type","statemented"}
+		pokeStakekey = {"stake_user_code","stake","player_account_balance","multiple","stake_win_or_lose","win_or_lose","game_record_id_fk","game_record_vplayer","stake_type","statemented"}
 	else
-		pokeStakekey =	{"stake_user_code","stake","player_account_balance","multiple","win_or_lose","game_record_id_fk","game_record_vplayer","stake_type","poker_type","statemented"}
+		pokeStakekey =	{"stake_user_code","stake","player_account_balance","multiple","stake_win_or_lose","win_or_lose","game_record_id_fk","game_record_vplayer","stake_type","poker_type","statemented"}
 	end 
 	 
 	local pokeDbkey = ""
@@ -112,9 +112,9 @@ function _M.insertPlayerStake(playerlist,stake_type)
 			local keyvalue = pokeStakekey[i]
 
 			if goodsvalue == "" then
-			 goodsvalue	=  player[keyvalue]
+			 goodsvalue	=  ngx.quote_sql_str(player[keyvalue])
 			else
-			 goodsvalue = goodsvalue..","..player[keyvalue]
+			 goodsvalue = goodsvalue..","..ngx.quote_sql_str(player[keyvalue])
 			end	
 
 		end
@@ -133,6 +133,8 @@ function _M.insertPlayerStake(playerlist,stake_type)
 		
 
 	local ordermemsql = string.format("insert into t_player_stake (%s) values %s",pokeDbkey,sqlvalue)
+
+
 	local db = mysql:new()
 	--事务操作
 	--db:query([[START TRANSACTION;]])
@@ -177,9 +179,9 @@ function _M.insertPlayerAccountProcess(playerlist)
 			local keyvalue = pokeStakekey[i]
 
 			if goodsvalue == "" then
-			 goodsvalue	=  player[keyvalue]
+			 goodsvalue	=  ngx.quote_sql_str(player[keyvalue])
 			else
-			 goodsvalue = goodsvalue..","..player[keyvalue]
+			 goodsvalue = goodsvalue..","..ngx.quote_sql_str(player[keyvalue])
 			end	
 
 		end

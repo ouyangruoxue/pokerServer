@@ -299,8 +299,9 @@ local function compare(x, y) --从大到小排序
  	  end	
  	--判断是否已经下注，未下注过直接插入,下注过的更新金额
     	table.insert(stakeGameMap,Message)
-         local stake_win_or_lose = Message.stake_win_or_lose
-        ngx.log(ngx.ERR,"stake_win_or_lose",cjson.encode(Message))
+  
+      local stake_win_or_lose = Message.stake_win_or_lose
+  
        if not self.total_bet[tostring(gameplayerId)] then
 
             self.total_bet[tostring(gameplayerId)] = {}
@@ -312,7 +313,7 @@ local function compare(x, y) --从大到小排序
                 self.total_bet[tostring(gameplayerId)][tostring(stake_win_or_lose)] = tonumber(Message.stake)
 
              else
-                local preStakewinOrlose = self.total_bet[tostring(gameplayerId)].stake_win_or_lose
+                local preStakewinOrlose = self.total_bet[tostring(gameplayerId)][tostring(stake_win_or_lose)]
 
                 self.total_bet[tostring(gameplayerId)][tostring(stake_win_or_lose)] = tonumber(Message.stake)+tonumber(preStakewinOrlose)
 
@@ -553,10 +554,10 @@ _Chatroom.stopBet = function (premature ,_self)
     _self:sendMsg(msgJson)
 
     local neteaseMsg = {}
+    neteaseMsg.data = {}
+    neteaseMsg.data.betRank = _self.betRank
 
-    neteaseMsg.data = _self.betRank
-
-    neteaseMsg.onlineNum = _self.playerS
+    neteaseMsg.data.onlineNum = _self.playerS
 
     neteaseMsg.type = 3
 
@@ -753,7 +754,7 @@ _Chatroom.settlement  = function (premature ,_self)
 
      --if result and returnBetResult then
         --6
-        local ok, err = ngx.timer.at(3, _self.prepare,_self)
+        local ok, err = ngx.timer.at(20, _self.prepare,_self)
         if not ok then
              ngx.log(ngx.ERR, "failed to create timer: ", err)
             return
