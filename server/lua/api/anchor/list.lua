@@ -18,7 +18,7 @@ local currentRequestArgs = reqArgs.new()
 local args = currentRequestArgs.getArgs()
 
 --必须带的参数
-if not args.page then	
+if not args.page  or  not args.room_type then	
 	local  result = responeData.new_failed({},zhCn_bundles.db_parm_error)
 	ngx.say(cjson.encode(result))
 	return	

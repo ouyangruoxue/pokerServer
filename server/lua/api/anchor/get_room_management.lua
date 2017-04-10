@@ -28,11 +28,11 @@ end
 		return err
 	end
 
--- local tempTable={
--- 	{'nickname','head_icon',idname='user_code_fk'}
--- }
+local tempTable={
+	{'nickname','head_icon',idname='user_code_fk'},
+}
 
--- local pfdbres = jsonHelp.cjsonPFTable2(dbres,tempTable)
+local pfdbres = jsonHelp.cjsonPFTable2(dbres,tempTable)
 
 local  result = responeData.new_success(dbres)
 ngx.say(cjson.encode(result))

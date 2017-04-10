@@ -79,12 +79,7 @@ if not dbres1 or table.getn(dbres1)==0 then
 			ngx.say(cjson.encode(result))
 			return 
 		end
-
-		local responeMsg = {}
-		responeMsg.message = "设置房管成功"
-		responeMsg.operation = 1
-
-		local  result = responeData.new_success(responeMsg)
+		local  result = responeData.new_success({message="设置房管成功"})
 		ngx.say(cjson.encode(result))
 	else
 		
@@ -115,12 +110,7 @@ if not dbres1 or table.getn(dbres1)==0 then
 			ngx.say(cjson.encode(result))
 			return 
 		end
-
-		local responeMsg = {}
-		responeMsg.message = "取消房管成功"
-		responeMsg.operation = -1
-
-		local  result = responeData.new_success(responeMsg)
+		local  result = responeData.new_success({message="取消房管成功"})
 		ngx.say(cjson.encode(result))
 	
 	end
