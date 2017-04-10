@@ -210,15 +210,6 @@ function _Chatroom:sendMsgToNetease(Message)
     uuid.seed(tSec)
     local msgid = uuid()
 
-    -- local ext = {}
-
-    -- ext.dat = self.betRank
-
-    -- ext.onlineNum = self.playerS
-
-    -- ext.type = 3
-
-
     local headr = neteaseHead.getNeteaseHttpHeadr(0)
     
     if not self.anchor_user_code or not self.anchorNeteaseRoomId then
@@ -608,6 +599,16 @@ _Chatroom.stopBet = function (premature ,_self)
     _self.gameSatus = 3
     local msgJson = cjson.encode(statustable)
     _self:sendMsg(msgJson)
+
+    for i=1,3 do
+        local ranktable = {}
+        ranktable.nickname="wangzhe"
+        ranktable.icon = "http://cdn.duitang.com/uploads/item/201405/29/20140529223850_wWs3H.thumb.600_0.jpeg"
+        ranktable.user_code = "4"
+        ranktable.stake = 400 - i*100
+        table.insert(_self.betRank,ranktable)
+    end
+
 
     local neteaseMsg = {}
     neteaseMsg.data = {}

@@ -70,7 +70,7 @@ end
 
 		local responeMsg = {}
 		responeMsg.message = "禁言成功"
-		responeMsg.result = 1
+		responeMsg.operation = 1
 
 		local  result = responeData.new_success(responeMsg)
 		ngx.say(cjson.encode(result))
@@ -105,9 +105,9 @@ end
 
 		local responeMsg = {}
 		responeMsg.message = "取消禁言成功"
-		responeMsg.result = 0
+		responeMsg.operation = -1
 
-		local  result = responeData.new_success({message="取消禁言成功"})
+		local  result = responeData.new_success(responeMsg)
 		ngx.say(cjson.encode(result))
 	end
 

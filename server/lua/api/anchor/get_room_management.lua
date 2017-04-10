@@ -29,7 +29,7 @@ end
 	end
 
 local tempTable={
-	{'nickname','head_icon',idname='user_code_fk'},
+	{'nickname','head_icon',idname='user_code_fk'}
 }
 
 local pfdbres = jsonHelp.cjsonPFTable2(dbres,tempTable)
