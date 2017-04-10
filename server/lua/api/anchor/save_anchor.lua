@@ -12,7 +12,6 @@
 	@param anchor_description  直播描述
 	@param anchor_live_time  直播时长
 	@param signing_time  签约时间
-	@param anchor_show_img 主播展示图
 
 
 ]]
@@ -57,9 +56,6 @@ user.anchor_live_time=args.anchor_live_time
 end
 if  args.signing_time and args.signing_time ~= ""  then 
 user.signing_time=args.signing_time
-end
-if  args.anchor_show_img and args.anchor_show_img ~= ""  then 
-user.anchor_show_img=args.anchor_show_img
 end
 
 

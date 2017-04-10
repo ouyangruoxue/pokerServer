@@ -17,6 +17,7 @@ local CardSet = require "game.TexasHoldem.CardSet"
 local _TexasHoldem = require "game.TexasHoldem.TexasHoldem"
 local _NNPoker = require "game.niuniu.niuniu"
 local randomname = require "game.TexasHoldem.player_robot_name"
+local userDb = require "db.base_db"
 
 local redis = require "redis.zs_redis"
 local cjson = require "cjson"
@@ -36,7 +37,6 @@ local _Chatroom = {
 	game_type = 1,
 	--房间类型
     room_type = 0,
-	roomSamp = nil,
 	--直播状态 1表示直播 0表示未开播
 	anchor_status = 0,
 	--玩家map
@@ -66,7 +66,8 @@ local _Chatroom = {
     isclose = false,
 
     anchorNeteaseRoomId = "",--云信聊天室id
-
+    --牌局最近十局输赢记录
+    ten_game_record = nil,
     -- 扑克牌
     poker = { },
 
@@ -121,12 +122,12 @@ _Chatroom.__index = _Chatroom;
 
 _Chatroom.join = function (_self, userId, semp, roomPwd )
 	
-	if tonumber(_self.room_type) == 1 then
-	if roomPwd ~= _self.roomPwd then
-		-- 密码不正确
-		return _CHATROOM_ERR.ERR_ROOM_PWD_ERROR
-		end
-	end
+	-- if tonumber(_self.room_type) == 1 then
+	-- if roomPwd ~= _self.roomPwd then
+	-- 	-- 密码不正确
+	-- 	return _CHATROOM_ERR.ERR_ROOM_PWD_ERROR
+	-- 	end
+	-- end
 	-- local playerS = _self.playerS; 
 	-- if playerS + 1 > _self.playerUpLimit then
 	-- 	return _CHATROOM_ERR.ERR_CHATROOM_FULLED
@@ -209,15 +210,6 @@ function _Chatroom:sendMsgToNetease(Message)
     uuid.seed(tSec)
     local msgid = uuid()
 
-    -- local ext = {}
-
-    -- ext.dat = self.betRank
-
-    -- ext.onlineNum = self.playerS
-
-    -- ext.type = 3
-
-
     local headr = neteaseHead.getNeteaseHttpHeadr(0)
     
     if not self.anchor_user_code or not self.anchorNeteaseRoomId then
@@ -299,8 +291,9 @@ local function compare(x, y) --从大到小排序
  	  end	
  	--判断是否已经下注，未下注过直接插入,下注过的更新金额
     	table.insert(stakeGameMap,Message)
-         local stake_win_or_lose = Message.stake_win_or_lose
-        ngx.log(ngx.ERR,"stake_win_or_lose",cjson.encode(Message))
+  
+      local stake_win_or_lose = Message.stake_win_or_lose
+  
        if not self.total_bet[tostring(gameplayerId)] then
 
             self.total_bet[tostring(gameplayerId)] = {}
@@ -312,7 +305,7 @@ local function compare(x, y) --从大到小排序
                 self.total_bet[tostring(gameplayerId)][tostring(stake_win_or_lose)] = tonumber(Message.stake)
 
              else
-                local preStakewinOrlose = self.total_bet[tostring(gameplayerId)].stake_win_or_lose
+                local preStakewinOrlose = self.total_bet[tostring(gameplayerId)][tostring(stake_win_or_lose)]
 
                 self.total_bet[tostring(gameplayerId)][tostring(stake_win_or_lose)] = tonumber(Message.stake)+tonumber(preStakewinOrlose)
 
@@ -337,9 +330,11 @@ local function compare(x, y) --从大到小排序
 
  	--判断所压牌型的table在不在 不在就新建
  	  local poker_type = Message["poker_type"]
- 	  if not self.stakePokeTypeMap[gameplayerId][poker_type] then
- 		 self.stakePokeTypeMap[gameplayerId] = {}
- 	  end	
+ 	  -- if not self.stakePokeTypeMap[gameplayerId][tostring(poker_type)] then
+ 		 -- self.stakePokeTypeMap[gameplayerId] = {}
+ 	  -- end	
+     
+
 
 
  	  local stakeTypeMap = self.stakePokeTypeMap[gameplayerId]
@@ -349,16 +344,74 @@ local function compare(x, y) --从大到小排序
  	  if  not user_code  then
  		 return _CHATROOM_ERR.ERR_USER_CODE_ERROR
  	  end	
- 	--直接插入,保存多条记录
-       
-    	   table.insert(stakeTypeMap,Message)
+ 	  
+      if not  self.limit_red[tostring(user_code)] then
+          self.limit_red[tostring(user_code)] = {}
+          for i=4,10 do
+            local templimitred = {}
+            templimitred.total = 1000
+            templimitred.already_bet = 0
+            self.limit_red[tostring(user_code)][tostring(i)]=templimitred
+          end
+    end
+
+         --限红判断
+      local stakelimitTotal  =   tonumber(self.limit_red[tostring(user_code)][tostring(poker_type)]["total"])
+      local stakelimitAlready_bet  =   self.limit_red[tostring(user_code)][tostring(poker_type)]["already_bet"]
+      local currentstake = Message["stake"]
+      local sum = tonumber(currentstake)+tonumber(stakelimitAlready_bet)
+      if sum > stakelimitTotal then
+        return _CHATROOM_ERR.ERR_GAME_BET_FULL
+      else
+        self.limit_red[tostring(user_code)][tostring(poker_type)]["already_bet"] = sum
+      end  
+
+      --直接插入,保存多条记录
+         table.insert(stakeTypeMap,Message)
+
+        local statustable = {}
+        statustable.type = 4
+        --1总下注金额2限红
+        statustable.bet_type = 2
+        statustable.data = self.limit_red[tostring(user_code)]
+        local msgJson = cjson.encode(statustable)
+        self:sendMsgForBetLimitredResult(user_code,msgJson)
+
     
 	end	
+
+   
+    local user ={}
+    user.user_code_fk=Message.stake_user_code
+    local userDbOp = userDb.new()
+    local dbres,err = userDbOp.getBaseFromSql("select nickname , head_icon as icon from t_user_ext_info",user,"and")
+    local usertable = nil
+    if dbres then
+        if type(dbres) =="table" then
+            if  table.getn(dbres)>0 then
+                usertable = dbres[1]
+            end
+        end    
+    end    
+
+        local ranktable = {}
+         if usertable then
+            if usertable.nickname and  usertable.nickname ~= ngx.null then
+                ranktable.nickname = usertable.nickname
+            end
+
+            if usertable.icon and  usertable.icon ~= ngx.null then
+                ranktable.icon = usertable.icon
+            end
+        
+        end   
+         ranktable.user_code = Message.stake_user_code
+         ranktable.stake = tonumber(Message["stake"])
 
     ---押注前三排行
     if table.getn(self.betRank) < 3 then
 
-         table.insert(self.betRank,Message)
+         table.insert(self.betRank,ranktable)
          table.sort(self.betRank,compare)
 
      else
@@ -368,7 +421,7 @@ local function compare(x, y) --从大到小排序
             
             local  tempBet = self.betRank[i]
 
-            if tonumber(tempBet["stake"]) < tonumber(Message["stake"]) then
+            if tonumber(tempBet["stake"]) < tonumber(ranktable["stake"]) then
                 table.remove(self.betRank,i)
                 isbigBet = true
                 break
@@ -377,15 +430,51 @@ local function compare(x, y) --从大到小排序
         end
         
         if isbigBet then
-            table.insert(self.betRank,Message)
+            table.insert(self.betRank,ranktable)
             table.sort(self.betRank,compare)  
          end    
      end 
-
-
-
 	return _CHATROOM_ERR.ERR_OK;
 end
+
+--[[
+--对押注人员进行针对性的牌局限红消息发送
+--@parm gameplayId 牌局玩家id
+--@parm msg 消息（所属牌局玩家牌消息）
+--]]
+ function _Chatroom:sendMsgForBetLimitredResult(usercode,msg)
+     
+    -- 聊天室 共享内存,用于lock 
+    local lock = self.lock;
+    if not lock then  
+        ngx.log(ngx.ERR,"join anchor room error ,the lock is nil")
+        return nil
+    end
+    local chat_room = ngx.shared.chat_room
+    local elapsed, err = lock:lock("Message"..self.anchor_user_code) 
+                if not elapsed then 
+                  ngx.log(ngx.ERR,"failed to acquire the lock", err)
+                  return nil
+                 end
+
+
+     local succ, err, forcible = chat_room:set("Message"..self.anchor_user_code, msg)
+     if self.playerMap[tostring(usercode)] then
+       local _semp = self.playerMap[tostring(usercode)].userSemp; 
+          if _semp then
+             _semp:post(1)
+        end 
+      end
+                -- -- 释放房间锁
+    local ok, err = lock:unlock()
+     if not ok then
+         ngx.log(ngx.ERR,"failed to unlock: ", err)
+    return nil
+ end
+
+end
+
+
 
 --[[
 --对押注人员进行针对性的牌局消息发送
@@ -482,6 +571,21 @@ end
 
 end
 
+--发送牌局历史记录
+_Chatroom.game_palyer_win_record = function (premature,_self)
+
+
+  if _self.ten_game_record then
+        local recordtable = {}
+        recordtable.type = 9
+        recordtable.data = {}
+        recordtable.data.game_record = _self.ten_game_record
+        local msgJsonrecord = cjson.encode(recordtable)
+        _self:sendMsg(msgJsonrecord)
+    end
+
+
+end
 --初始化牌局状态
 _Chatroom.prepare = function (premature,_self)
     _self.publicCards = CardSet:new()
@@ -490,7 +594,10 @@ _Chatroom.prepare = function (premature,_self)
     _self.stakePokeTypeMap = {}
     _self.betRank = {}
     _self.total_bet = {}
+    _self.limit_red = {}
     _self.isclose = false
+
+   
 
     for suit = 1, 4, 1 do
         for id = 1, 13, 1 do
@@ -503,6 +610,8 @@ _Chatroom.prepare = function (premature,_self)
     	gamePlayTempMap.cards = CardSet:new()
     end	
     	
+  
+
 
     local statustable = {}
     statustable.type = 8
@@ -514,8 +623,23 @@ _Chatroom.prepare = function (premature,_self)
     local msgJson = cjson.encode(statustable)
     _self:sendMsg(msgJson)
    
+
+    --发送牌局状态到云信聊天室
+    
+    local neteaseMsg = {}
+    neteaseMsg.data = {}
+    neteaseMsg.data.game_status = 1
+    neteaseMsg.type = 4
+    _self:sendMsgToNetease(neteaseMsg)
+
     --5
     local ok, err = ngx.timer.at(5, _self.startBet,_self)
+     if not ok then
+         ngx.log(ngx.ERR, "failed to create timer: ", err)
+         return
+     end
+
+     local ok, err = ngx.timer.at(2, _self.game_palyer_win_record,_self)
      if not ok then
          ngx.log(ngx.ERR, "failed to create timer: ", err)
          return
@@ -552,11 +676,22 @@ _Chatroom.stopBet = function (premature ,_self)
     local msgJson = cjson.encode(statustable)
     _self:sendMsg(msgJson)
 
+    for i=1,3 do
+        local ranktable = {}
+        ranktable.nickname="wangzhe"
+        ranktable.icon = "http://cdn.duitang.com/uploads/item/201405/29/20140529223850_wWs3H.thumb.600_0.jpeg"
+        ranktable.user_code = "4"
+        ranktable.stake = 400 - i*100
+        table.insert(_self.betRank,ranktable)
+    end
+
+
     local neteaseMsg = {}
-
-    neteaseMsg.data = _self.betRank
-
-    neteaseMsg.onlineNum = _self.playerS
+    neteaseMsg.data = {}
+    if table.getn(_self.betRank)>0  then
+        neteaseMsg.data.betRank = _self.betRank
+    end
+    neteaseMsg.data.onlineNum = _self.playerS
 
     neteaseMsg.type = 3
 
@@ -590,7 +725,7 @@ _Chatroom.dealCardByGameType = function (premature ,_self)
     else	
     
     end		
-
+    --  发送牌局信息到客户端
     local statustable = {}
     statustable.type = 8
     statustable.data = {}
@@ -600,6 +735,14 @@ _Chatroom.dealCardByGameType = function (premature ,_self)
     _self.gameSatus = 4
     local msgJson = cjson.encode(statustable)
     _self:sendMsg(msgJson)
+
+    --  发送牌局状态到云信聊天室
+     local neteaseMsg = {}
+     neteaseMsg.data = {}
+    neteaseMsg.data.game_status = 2
+    neteaseMsg.type = 4
+    _self:sendMsgToNetease(neteaseMsg)
+
     --9
      local ok, err = ngx.timer.at(9, _self.turnon,_self)
      if not ok then
@@ -660,6 +803,51 @@ _Chatroom.turnon  = function (premature ,_self)
     
     end		
 
+    
+    --  判断是否存在
+    if not _self.ten_game_record then
+        _self.ten_game_record = {}
+           -- 比牌
+        for i=2,table.getn(_self.gamePlayMap),1 do
+            local robotTemp = _self.gamePlayMap[i]
+            local robotTempPlayerId = robotTemp["game_player_id"]
+            _self.ten_game_record[tostring(robotTempPlayerId)] = {}
+            _self.ten_game_record[tostring(robotTempPlayerId)]["game_result"]={}
+            table.insert(_self.ten_game_record[tostring(robotTempPlayerId)]["game_result"],_self.gamePlayMap[i].game_result)
+            local wloseresult = tonumber(_self.gamePlayMap[i].game_result)
+            _self.ten_game_record[tostring(robotTempPlayerId)]["win_probability"]= wloseresult/1
+            _self.ten_game_record[tostring(robotTempPlayerId)]["name"] = _self.gamePlayMap[i].name
+        end
+
+    else
+            -- 先进行结果插入再去掉超出部分并计算胜率
+        for i=2,table.getn(_self.gamePlayMap),1 do
+            local robotTemp = _self.gamePlayMap[i]
+            local robotTempPlayerId = robotTemp["game_player_id"]
+            local robotTempPlayerTab = _self.ten_game_record[tostring(robotTempPlayerId)]
+            local robotTempPlayerTabresult =  robotTempPlayerTab["game_result"]
+            table.insert(robotTempPlayerTabresult,_self.gamePlayMap[i].game_result)
+
+            local robotTempTablelength = table.getn(robotTempPlayerTabresult)
+            if robotTempTablelength >10 then
+                table.remove(robotTempPlayerTabresult,1)
+            end    
+            local wloseresult =  table.getn(robotTempPlayerTabresult)
+            local winprocess = 0
+            for i=1,table.getn(robotTempPlayerTabresult) do
+                local value = robotTempPlayerTabresult[i]
+                if tonumber(value) == 1 then
+                    winprocess = winprocess + 1
+                end    
+            end
+            robotTempPlayerTab["win_probability"]= tonumber(winprocess)/tonumber(wloseresult)
+            robotTempPlayerTab["name"] = _self.gamePlayMap[i].name
+        end   
+
+    end    
+    
+
+
     --发送牌局结果到云信聊天室
     
     local neteaseMsg = {}
@@ -684,8 +872,9 @@ _Chatroom.turnon  = function (premature ,_self)
         end   
         table.insert(returnResult,returnResultindex)
     end 
-
-    neteaseMsg.data = returnResult
+    neteaseMsg.data = {}
+    neteaseMsg.data.returnResult = returnResult
+    neteaseMsg.data.game_status = 3
     neteaseMsg.type = 4
     _self:sendMsgToNetease(neteaseMsg)
 
@@ -753,7 +942,7 @@ _Chatroom.settlement  = function (premature ,_self)
 
      --if result and returnBetResult then
         --6
-        local ok, err = ngx.timer.at(3, _self.prepare,_self)
+        local ok, err = ngx.timer.at(20, _self.prepare,_self)
         if not ok then
              ngx.log(ngx.ERR, "failed to create timer: ", err)
             return
@@ -804,7 +993,15 @@ function _Chatroom:resulthandle()
     local red = redis:new()
 
     --奖金池
-    local capital_pool,err = red:get("wj_capital_pool")
+
+    local poolKey = nil
+    if tonumber(self.game_type) == 1 then
+        poolKey = "wj_dzpk_capital_pool"
+    else
+        poolKey = "wj_niuniu_capital_pool"
+    end    
+
+    local capital_pool,err = red:get(poolKey)
     if not capital_pool then
         capital_pool = 0
     end   
@@ -888,9 +1085,9 @@ function _Chatroom:resulthandle()
                     stakeTypetemp.player_account_balance = currentBalance
                     local res ,err = red:set("balance_"..stakeTypetemp.stake_user_code,currentBalance)
                     if res then
-                      staketemp.statemented = 1
+                      stakeTypetemp.statemented = 1
                     end 
-                    capital_pool = tonumber(capital_pool) - tonumber(staketemp.stake)*tonumber(staketemp.multiple)*0.95   
+                    capital_pool = tonumber(capital_pool) - tonumber(stakeTypetemp.stake)*tonumber(stakeTypetemp.multiple)*0.95   
                 end 
               
             else  
@@ -899,14 +1096,14 @@ function _Chatroom:resulthandle()
             accountparocessTemp.increase = 0    
             stakeTypetemp.win_or_lose = 0
             stakeTypetemp.statemented = 1
-            capital_pool = tonumber(capital_pool) + tonumber(staketemp.stake)
+            capital_pool = tonumber(capital_pool) + tonumber(stakeTypetemp.stake)
             end 
             table.insert(sqlStaketype,stakeTypetemp)
             table.insert(accountparocess,accountparocessTemp)
         end
     end
 
-     local capital_poolres,capital_poolerr = red:set("wj_capital_pool",capital_pool)
+     local capital_poolres,capital_poolerr = red:set(poolKey,capital_pool)
      if not capital_poolres then
         ngx.log(ngx.ERR, "capital_poolres ", capital_poolerr)
      end 
@@ -946,7 +1143,7 @@ end
 
 math.randomseed(tostring(os.time()):reverse():sub(1, 7))
 function _Chatroom:getCard(seed)
-     math.randomseed(os.clock()*10000)
+     --math.randomseed(os.clock()*10000)
     local index = math.random(1, table.getn(self.poker))
     local card = self.poker[index]
     table.remove(self.poker, index)
@@ -1075,10 +1272,6 @@ function _Chatroom:new(roomId,roomName,anchor_user_code,playerUpLimit,gameType,n
 
     if  neteaseRoomId then
         chatRoom.anchorNeteaseRoomId = neteaseRoomId
-    end    
-
-    if roomPwd then
-        chatRoom.roomPwd = roomPwd
     end    
 
 	local resty_lock = require "resty.lock"  
