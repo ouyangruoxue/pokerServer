@@ -17,6 +17,7 @@ local CardSet = require "game.TexasHoldem.CardSet"
 local _TexasHoldem = require "game.TexasHoldem.TexasHoldem"
 local _NNPoker = require "game.niuniu.niuniu"
 local randomname = require "game.TexasHoldem.player_robot_name"
+local userDb = require "db.base_db"
 
 local redis = require "redis.zs_redis"
 local cjson = require "cjson"
@@ -121,12 +122,12 @@ _Chatroom.__index = _Chatroom;
 
 _Chatroom.join = function (_self, userId, semp, roomPwd )
 	
-	if tonumber(_self.room_type) == 1 then
-	if roomPwd ~= _self.roomPwd then
-		-- 密码不正确
-		return _CHATROOM_ERR.ERR_ROOM_PWD_ERROR
-		end
-	end
+	-- if tonumber(_self.room_type) == 1 then
+	-- if roomPwd ~= _self.roomPwd then
+	-- 	-- 密码不正确
+	-- 	return _CHATROOM_ERR.ERR_ROOM_PWD_ERROR
+	-- 	end
+	-- end
 	-- local playerS = _self.playerS; 
 	-- if playerS + 1 > _self.playerUpLimit then
 	-- 	return _CHATROOM_ERR.ERR_CHATROOM_FULLED
@@ -338,9 +339,11 @@ local function compare(x, y) --从大到小排序
 
  	--判断所压牌型的table在不在 不在就新建
  	  local poker_type = Message["poker_type"]
- 	  if not self.stakePokeTypeMap[gameplayerId][poker_type] then
- 		 self.stakePokeTypeMap[gameplayerId] = {}
- 	  end	
+ 	  -- if not self.stakePokeTypeMap[gameplayerId][tostring(poker_type)] then
+ 		 -- self.stakePokeTypeMap[gameplayerId] = {}
+ 	  -- end	
+     
+
 
 
  	  local stakeTypeMap = self.stakePokeTypeMap[gameplayerId]
@@ -350,16 +353,64 @@ local function compare(x, y) --从大到小排序
  	  if  not user_code  then
  		 return _CHATROOM_ERR.ERR_USER_CODE_ERROR
  	  end	
- 	--直接插入,保存多条记录
-       
-    	   table.insert(stakeTypeMap,Message)
+ 	
+         --限红判断
+      local stakelimitTotal  =   tonumber(self.limit_red[tostring(poker_type)]["total"])
+      local stakelimitAlready_bet  =   self.limit_red[tostring(poker_type)]["already_bet"]
+      local currentstake = Message["stake"]
+      local sum = tonumber(currentstake)+tonumber(stakelimitAlready_bet)
+      if sum > stakelimitTotal then
+        return _CHATROOM_ERR.ERR_GAME_BET_FULL
+      else
+        self.limit_red[tostring(poker_type)]["already_bet"] = sum
+      end  
+
+      --直接插入,保存多条记录
+         table.insert(stakeTypeMap,Message)
+
+        local statustable = {}
+        statustable.type = 4
+        --1总下注金额2限红
+        statustable.bet_type = 2
+        statustable.data = self.limit_red
+        local msgJson = cjson.encode(statustable)
+        self:sendMsg(msgJson)
+
     
 	end	
+
+   
+    local user ={}
+    user.user_code_fk=Message.stake_user_code
+    local userDbOp = userDb.new()
+    local dbres,err = userDbOp.getBaseFromSql("select nickname , head_icon as icon from t_user_ext_info",user,"and")
+    local usertable = nil
+    if dbres then
+        if type(dbres) =="table" then
+            if  table.getn(dbres)>0 then
+                usertable = dbres[1]
+            end
+        end    
+    end    
+
+        local ranktable = {}
+         if usertable then
+            if usertable.nickname and  usertable.nickname ~= ngx.null then
+                ranktable.nickname = usertable.nickname
+            end
+
+            if usertable.icon and  usertable.icon ~= ngx.null then
+                ranktable.icon = usertable.icon
+            end
+        
+        end   
+         ranktable.user_code = Message.stake_user_code
+         ranktable.stake = tonumber(Message["stake"])
 
     ---押注前三排行
     if table.getn(self.betRank) < 3 then
 
-         table.insert(self.betRank,Message)
+         table.insert(self.betRank,ranktable)
          table.sort(self.betRank,compare)
 
      else
@@ -369,7 +420,7 @@ local function compare(x, y) --从大到小排序
             
             local  tempBet = self.betRank[i]
 
-            if tonumber(tempBet["stake"]) < tonumber(Message["stake"]) then
+            if tonumber(tempBet["stake"]) < tonumber(ranktable["stake"]) then
                 table.remove(self.betRank,i)
                 isbigBet = true
                 break
@@ -378,13 +429,10 @@ local function compare(x, y) --从大到小排序
         end
         
         if isbigBet then
-            table.insert(self.betRank,Message)
+            table.insert(self.betRank,ranktable)
             table.sort(self.betRank,compare)  
          end    
      end 
-
-
-
 	return _CHATROOM_ERR.ERR_OK;
 end
 
@@ -491,7 +539,15 @@ _Chatroom.prepare = function (premature,_self)
     _self.stakePokeTypeMap = {}
     _self.betRank = {}
     _self.total_bet = {}
+    _self.limit_red = {}
     _self.isclose = false
+
+    for i=4,10 do
+        local templimitred = {}
+        templimitred.total = 1000
+        templimitred.already_bet = 0
+       _self.limit_red[tostring(i)] = templimitred
+    end
 
     for suit = 1, 4, 1 do
         for id = 1, 13, 1 do
@@ -555,8 +611,9 @@ _Chatroom.stopBet = function (premature ,_self)
 
     local neteaseMsg = {}
     neteaseMsg.data = {}
-    neteaseMsg.data.betRank = _self.betRank
-
+    if table.getn(_self.betRank)>0  then
+        neteaseMsg.data.betRank = _self.betRank
+    end
     neteaseMsg.data.onlineNum = _self.playerS
 
     neteaseMsg.type = 3
@@ -805,7 +862,15 @@ function _Chatroom:resulthandle()
     local red = redis:new()
 
     --奖金池
-    local capital_pool,err = red:get("wj_capital_pool")
+
+    local poolKey = nil
+    if tonumber(self.game_type) == 1 then
+        poolKey = "wj_dzpk_capital_pool"
+    else
+        poolKey = "wj_niuniu_capital_pool"
+    end    
+
+    local capital_pool,err = red:get(poolKey)
     if not capital_pool then
         capital_pool = 0
     end   

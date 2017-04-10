@@ -67,7 +67,12 @@ end
 			return 
 		end
 		-- ngx.say(cjson.encode(dbres))
-		local  result = responeData.new_success({message="禁言成功"})
+
+		local responeMsg = {}
+		responeMsg.message = "禁言成功"
+		responeMsg.result = 1
+
+		local  result = responeData.new_success(responeMsg)
 		ngx.say(cjson.encode(result))
 	else
 
@@ -97,6 +102,11 @@ end
 			ngx.say(cjson.encode(result))
 			return 
 		end
+
+		local responeMsg = {}
+		responeMsg.message = "取消禁言成功"
+		responeMsg.result = 0
+
 		local  result = responeData.new_success({message="取消禁言成功"})
 		ngx.say(cjson.encode(result))
 	end

@@ -19,8 +19,8 @@ if args.id_pk and args.id_pk~="" then
 user.id_pk=args.id_pk
 end 
 
-if args.anchor_id and args.anchor_id~="" then 
-user.anchor_id_fk=args.anchor_id
+if args.anchor_user_code and args.anchor_user_code~="" then 
+user.anchor_user_code=args.anchor_user_code
 end
 
 if args.user_code and args.user_code~="" then 
