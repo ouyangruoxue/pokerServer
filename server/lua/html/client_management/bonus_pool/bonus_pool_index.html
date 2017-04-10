@@ -15,7 +15,7 @@
   <link rel="stylesheet" href="/assets/css/amazeui.min.css"/>
   <link rel="stylesheet" href="/assets/css/admin.css">
 </head>
-<body>
+<body onload='initPageInfo({*bonus_pool_index_pager.curr_page*},{*bonus_pool_index_pager.max_page*},"pager_index")'>
 <!--[if lte IE 9]>
 <p class="browsehappy">你正在使用<strong>过时</strong>的浏览器，Amaze UI 暂不支持。 请 <a href="http://browsehappy.com/" target="_blank">升级浏览器</a>
   以获得更好的体验！</p>
@@ -32,26 +32,27 @@
   <div class="admin-content">
     <div class="admin-content-body">
       <div class="am-cf am-padding">
-        <div class="am-fl am-cf"><strong class="am-text-primary am-text-lg">渠道商后台</strong> / <small>奖金池管理</small></div>
+        <div class="am-fl am-cf"><strong class="am-text-primary am-text-lg">渠道商后台</strong> / <small>奖金池历史记录</small></div>
       </div>
 
 
       <div class="am-g">
-        <div class="am-u-sm-12 am-u-md-6">
-          <div class="am-btn-toolbar">
-            <div class="am-btn-group am-btn-group-xs">
-              <button type="button" class="am-btn am-btn-default"onclick="opt_pool()">奖金池查看及操作</button>
-            </div>
-          </div>
-        </div> 
-          <div class="am-form-group">
-            <select data-am-selected="{btnSize: 'sm'}" onchange="change_anchor_status()" id="anchor_status_select">
-              <option value="option0">全部</option>
+	  <div class="am-u-sm-12 am-u-md-6">
+            <select data-am-selected="{btnSize: 'sm'}" onchange="change_game_type()" id="game_type_select">
+              <option value="option0">游戏类型</option>
 			  {% for k,v in pairs(game_type_data) do %}
               <option value="{*v.id_pk*}">{*v.game_name*}</option>
 			 {% end %}
             </select>
           </div>
+        <div class="am-u-sm-12 am-u-md-6">
+          <div class="am-btn-toolbar">
+            <div class="am-btn-group am-btn-group-xs">
+              <!-- <button type="button" class="am-btn am-btn-default"onclick="opt_pool()">奖金池查看及操作</button> -->
+            </div>
+          </div>
+        </div> 
+          
       </div>
 	  
 	<div class="am-g">
@@ -77,13 +78,13 @@
 					    <div class="am-btn-toolbar">  
 						  <div class="am-btn-group am-btn-group-xs">  
 						    <div class="am-btn am-btn-default am-btn-xs am-text-secondary" onclick="edit_gift(this)">
-								<input type="hidden" value="{*v.id_pk*}"></input><span class="am-icon-pencil-square-o"></span> 
-								编辑
+								<input type="hidden" value="{*v.game_type_id*}"></input><span class="am-icon-pencil-square-o"></span> 
+								编辑对应的奖金池
 							</div>  
-						    <div class="am-btn am-btn-default am-btn-xs am-text-danger am-hide-sm-only" onclick="delete_gift(this)">
-								<input type="hidden" value="{*v.id_pk*}"/><span class="am-icon-pencil-square-o"></span><span class="am-icon-trash-o"></span> 
-								删除
-							</div>  
+						    <!-- <div class="am-btn am-btn-default am-btn-xs am-text-danger am-hide-sm-only" onclick="delete_gift(this)"> -->
+								<!-- <input type="hidden" value="{*v.id_pk*}"></input><span class="am-icon-trash-o"></span>  -->
+								<!-- 删除该条历史记录 -->
+							<!-- </div>   -->
 						  </div>  
 					    </div>  
 					  </td>  
@@ -91,23 +92,25 @@
 			   {% end %}
               </tbody>
             </table>
-            <div class="am-cf">
-              共 15 条记录
-              <div class="am-fr">
-                <ul class="am-pagination">
-                  <li class="am-disabled"><a href="#">?</a></li>
-                  <li class="am-active"><a href="#">1</a></li>
-                  <li><a href="#">2</a></li>
-                  <li><a href="#">3</a></li>
-                  <li><a href="#">4</a></li>
-                  <li><a href="#">5</a></li>
-                  <li><a href="#">?</a></li>
-                </ul>
-              </div>
-            </div>
+             <div class="am-cf" id="pager_index">
+              <!-- 共 15 条记录 -->
+              <!-- <div class="am-fr"> -->
+                <!-- <ul class="am-pagination"> -->
+                  <!-- <li class="am-disabled"><a href="#">?</a></li> -->
+                  <!-- <li class="am-active"><a href="#">1</a></li> -->
+                  <!-- <li><a href="#">2</a></li> -->
+                  <!-- <li><a href="#">3</a></li> -->
+                  <!-- <li><a href="#">4</a></li> -->
+                  <!-- <li><a href="#">5</a></li> -->
+                  <!-- <li><a href="#">?</a></li> -->
+                <!-- </ul> -->
+              <!-- </div> -->
+            </div> 
 			
             <hr />
-            <p>注：.....</p>
+            <p>注：如果提取金额比奖金池金额小，提取结果为正，否则为负</br>
+			注：奖金池金额以实时结果为准
+			</p>
           </form>
         </div>
 
@@ -136,29 +139,27 @@
 
 <script>
 
-	<!-- 跳转到奖金池操作界面 -->
-  function opt_pool(){
-	<!-- window.location.href="http://localhost/api/html/client_management/bonus_pool/bonus_pool_opt" -->
-	window.location.href=bonus_pool_opt_path()
- }
-	<!-- 新建一个页面，看上去和新增页面很像，然后将数据带过去，修改后通过ajax提交 -->
+	<!-- 选择对应游戏类型的奖金池历史记录 -->
+	function change_game_type(){
+	 var game_type_id=document.getElementById("game_type_select").value
+	 window.location.href=bonus_pool_index_path()+"?game_id="+game_type_id
+	} 
+	<!-- 修改该条历史记录对应的奖金池信息 -->
 	 function edit_gift(obj){
-	 var gift_id=obj.getElementsByTagName("input")[0].value 
-		 <!-- window.location.href="http://localhost/api/html/client_management/gift/gift_edit?id_pk="+gift_id -->
-		  window.location.href= gift_edit_path()+"?id_pk="+gift_id
+	 var game_id=obj.getElementsByTagName("input")[0].value 
+		  window.location.href= bonus_pool_opt_path()+"?game_id="+game_id
 	 }
- <!-- 删除对应的礼物 -->
+ <!-- 删除对应的奖金池信息-->
 	 function delete_gift(obj){
-	 var gift_id=obj.getElementsByTagName("input")[0].value 
+	 var bouns_history_id=obj.getElementsByTagName("input")[0].value 
 			$.ajax({
 			type:"post", 
-			<!-- url:"http://localhost/api/gift/delete_gifttype",  -->
-			url:gift_delete_path(),
+			url:bonus_pool_delete_path(),
 			 data:{
-				"id_pk":gift_id,
+				"id_pk":bouns_history_id
 				 },  
 			cache:false,
-			success:function(data,status){ 
+			success:function(data,status){
 				var dateJson = JSON.parse(data)	 
 				 if(1==dateJson.code){ 
 					 alert("删除成功！") 
@@ -169,6 +170,13 @@
 			}
 		 })
 	 }
+	 <!-- 分页的函数 -->
+	function beginPostTestResult(page){
+	var max_page={* bonus_pool_index_pager.max_page *}
+		<!-- window.location.href="http://localhost/api/html/client_management/banner/banner_index?page="+page -->
+		window.location.href=bonus_pool_index_path()+"?page="+page
+		initPageInfo(page,max_page,"pager_index");
+	}
 
 </script>
 </body>

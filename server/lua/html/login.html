@@ -69,7 +69,7 @@
 	<script src="/assets/js/login.js"></script> 
 	<script src="/assets/js/md5.js"></script> 
 	<script src="/assets/js/jquery.form.js"></script> 
-	<!-- <script src="/assets/js/editor.js"></script>  -->
+	<script src="/assets/js/mycomment.js"></script> 
 	<script language='javascript'>
 		function on_login(lgtype,usn,psw){
 		//先对账号密码做判断，如果不符合要求，给予提示，并且锁定输入框
@@ -77,19 +77,21 @@
 		var psw=document.getElementById("password").value
 		var lock_psw=hex_md5(psw)
 		if(isalphanumber(usn)&&isalphanumber(psw)){
-		 $.ajax({
+		$.ajax({
 			type:"post", 
-			url:"http://localhost/api/user/login", 
-			 data:{ 
+			url:login_path(),
+			data:{ 
 				"user_name":usn,
-				 "password":lock_psw, 
+				 "password":lock_psw
 				 },  
-			<!-- data:$('#login_form').serialize(), -->
 			cache:false,
 			success:function(data,status){ 
+			
 				var dateJson = JSON.parse(data)	 
+				
 				if(1==dateJson.code){
-					window.location.href = 'http://localhost/api/html/index?token='+dateJson.data.token
+					<!-- window.location.href = 'http://localhost/api/html/client_management/home/home?token='+dateJson.data.token -->
+					 window.location.href=home_path()+"?token="+dateJson.data.token
 				}else{
 					alert("登录失败！")
 				}

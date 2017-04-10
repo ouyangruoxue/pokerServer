@@ -16,6 +16,5 @@ _M.ERR_ANCHOR_CREATE_LOCK = -4  -- 创建主播聊天室的lock失败
 _M.ERR_ROOM_PWD_ERROR = -5	-- 密码错误
 _M.ERR_USER_CODE_ERROR = -6 --用户编号错误
 _M.ERR_GAME_BET_TIME_OUT = -7 --下注时间已过
-_M.ERR_GAME_BET_FULL = -8 --下注时间已过
 return _M
 

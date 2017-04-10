@@ -7,7 +7,7 @@ function _M.generateUniqueUserCode(key,redisclientnum)
 	if not watch then
 		return "乐观锁出错"
 	end
-	local usercode,err = red:get(key)
+	local usercode = red:get(key)
 	if not usercode  then
 		usercode = 1
 	else

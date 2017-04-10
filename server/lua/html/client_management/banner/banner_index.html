@@ -58,7 +58,7 @@
 				<th class="table-type">标题</th>
 				<th class="table-author am-hide-sm-only">类型</th>
 				<th class="table-date am-hide-sm-only">上线时间</th>
-				<th class="table-date am-hide-sm-only">下线时间</th>
+				<!-- <th class="table-date am-hide-sm-only">下线时间</th> -->
 				<th class="table-date am-hide-sm-only">状态</th>
 				<th class="table-set">操作</th>
               </tr>
@@ -81,9 +81,7 @@
 					  <td class="am-hide-sm-only">{*v.online_time*}</td>  
 					  <td class="am-hide-sm-only">{*v.offline_time*}</td>  
 					  <td class="am-hide-sm-only">
-					  {% if v.banner_status==0 then %}
-						下线
-					  {% elseif v.banner_status==1 then  %}
+					  {% if v.banner_status==1 then  %}
 						上线
 						{% elseif v.banner_status==2 then %}
 						定时上线
@@ -153,7 +151,8 @@
 <script>
 	<!-- 跳转到添加banner界面 -->
   function add_banner(){
-	window.location.href="http://localhost/api/html/client_management/banner/banner_add"
+	<!-- window.location.href="http://localhost/api/html/client_management/banner/banner_add" -->
+	window.location.href=anchor_add_path()
  }
 	<!-- 新建一个页面，看上去和新增页面很像，然后将数据带过去，修改后通过ajax提交 -->
 	 function edit_banner(obj){

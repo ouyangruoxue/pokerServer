@@ -36,20 +36,22 @@
         <div class="am-fl am-cf"><strong class="am-text-primary am-text-lg">渠道商后台</strong> / <small>提取奖金池</small></div>
       </div>
 	  <div class="am-tabs am-margin" data-am-tabs>
-	  {% for k,v in pairs(bonus_pool_opt_data) do %}
+	 {% for k,v in pairs(game_type_name) do %}
       <ul class="am-tabs-nav am-nav am-nav-tabs">
+	  <input type="hidden" id="game_id" value="{*v.id_pk*}">
         <li class="am-active"><a href="#tab1">{*v.game_name*}</a></li>
       </ul>
-
+	  {% end %}
+	  
       <div class="am-tabs-bd">
 	  
         <div class="am-tab-panel am-fade am-in am-active" id="tab1">
-
+		
           <div class="am-g am-margin-top">
             <div class="am-u-sm-4 am-u-md-2 am-text-right">实时奖金池金额</div>
             <div class="am-u-sm-8 am-u-md-10">
               <div class="am-btn-group" data-am-button>
-                <input type="text" placeholder="实时奖金池金额" value="{* v.money_count*}"></input>
+                <input type="text" placeholder="实时奖金池金额" value="{*bonus_pool*}" disabled="disabled"></input>
               </div>
             </div>
           </div>
@@ -57,18 +59,18 @@
             <div class="am-u-sm-4 am-u-md-2 am-text-right">需要修改后的奖金池金额</div>
             <div class="am-u-sm-8 am-u-md-10">
               <div class="am-btn-group" data-am-button>
-                <input type="text" placeholder="输入修改后的金额数值" id="money_{*v.id_pk*}"></input>
+                <input type="text" placeholder="输入修改后的金额数值" id="change_money"></input>
               </div>
             </div>
           </div>
 
 		  
 			<div class="am-margin">
-			  <button type="button" class="am-btn am-btn-primary am-btn-xs" onclick="change_money_count(this)"><input type="hidden" value="{*v.id_pk*}">提交保存</button>
+			  <button type="button" class="am-btn am-btn-primary am-btn-xs" onclick="change_money_count()"><input type="hidden">提交保存</button>
 			</div>
         </div>
     </div>
-	{% end %}
+
     </div>
 
 
@@ -95,17 +97,18 @@
 <script src="/assets/js/mycomment.js"></script>
 
 <script>
-	<!-- 新增主播信息 -->
-	function change_money_count(obj){
-		var pool_id=obj.getElementsByTagName("input")[0].value 
-		var change_maney=document.getElementById("money_"+pool_id).value
+	<!-- 修改对应的奖金池信息 -->
+	function change_money_count(){
+	var game_id=document.getElementById("game_id").value
+		var change_money=document.getElementById("change_money").value
 		var update_time=getNowFormatDate()
 			$.ajax({
 			type:"post", 
-			url:"http://localhost/api/bonus_pool/bonus_pool_save", 
+			url:bonus_pool_opt_after_path(),
 			 data:{ 
-				"gift_name":gname,
-		
+				"id_pk":game_id,
+				"change_money":change_money,
+				"update_time":getNowFormatDate()
 				 },  
 			cache:false,
 			success:function(data,status){ 
@@ -118,9 +121,7 @@
 				} 
 			}
 		 })
-	
 	}
-
 </script>
 </body>
 </html>

@@ -29,9 +29,6 @@ local message_enmu = {
     type_anchor_close = 7,
     --牌局状态变更消息 
     type_game_status = 8     
-
-    --牌局历史记录 
-    type_game_status = 9  
 }
 
 --[[

@@ -10,15 +10,6 @@ _M.mysql_master = {
 	max_packet_size = 1024 * 1024 
 }
 
-_M.mysql_xg_master = {
-        host = "103.230.243.174",
-        port = 3306,
-        database = "poker_game",
-        user = "poker_game",
-        password = "ZhHYExmT3x",
-        max_packet_size = 1024 * 1024 
-}
-
 
 _M.redis_master_main={
         host = "127.0.0.1",

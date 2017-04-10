@@ -10,7 +10,7 @@
 
 local cjson     = require "cjson"
 local file_apis = require "files.common.file_apis"
-local zsrequest = require "common.request_args"
+local zsrequest = require "common.request"
 local api_data  = require "common.api_data_help"
 
 

@@ -6,7 +6,7 @@
 --]]
 
 local mysql     = require "resty.mysql"
-local db_conf   = require "db.db_help.db_conf"
+local db_conf   = require "files.db_help.db_conf"
 local redis     = require "files.db_help.file_redis_help"
 
 local cjson = require "cjson"

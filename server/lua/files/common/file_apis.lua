@@ -22,7 +22,8 @@
 
 local cjson     = require "cjson"
 local resty_md5 = require "resty.md5"
-local uuid      = require "resty.uuid"
+-- local uuid      = require "resty.uuid"
+local uuid      = require "resty.jit-uuid"
 local resty_sha1 = require "resty.sha1"
 
 local upload    = require "resty.upload"
@@ -308,7 +309,15 @@ function _M.pre_uploading( _usercode )
     -- 随机生成uuid 通过md5进行唯一编码
     local md5 = resty_sha1:new()
     -- 生成唯一uuid
-    local file_id = uuid.generate()
+
+    -- 生成uuid随机数，首先要强制刷新系统时间，然后获取系统时间，根据系统时间生成uuid随机数
+    ngx.ngx.update_time()
+    local temp1=ngx.now()
+    uuid.seed(temp1)
+
+
+    -- local file_id = uuid.generate()
+    local file_id=uuid()
     -- 通过md5 编码一次
     md5:update(file_id)
     local md5_sum = md5:final()
@@ -374,9 +383,14 @@ function _M.handle_uploading()
         if typ == "header" then
             local file_name = get_filename(res[2]) 
             if file_name then
-                uuid_name = uuid.generate_time()..'.'..file_help.getExtension(file_name);
+                ngx.update_time()
+                  local temp1=ngx.now()
+                 uuid.seed(temp1)
+                 local temp2=uuid()
+                -- uuid_name = uuid.generate_time()..'.'..file_help.getExtension(file_name);
+                uuid_name=temp2..'.'..file_help.getExtension(file_name);
                 
-                file = io.open(dst_dir .. "/" .. uuid_name , "wb") 
+                file = io.open(dst_dir .. "/html/uploadfile/" .. uuid_name , "wb") 
                 if not file then 
                     ngx.log(ngx.ERR, "failed to open file ", uuid_name) 
                     return api_data.new_failed();
@@ -408,9 +422,12 @@ function _M.handle_uploading()
         end
     end
 
-    local data = api_data.new_success();
-    data.data = files_info;
-    return data;
+    local path
+    for k,v in pairs(files_info) do 
+        path=k
+    end
+    ngx.log(ngx.ERR,"picture address is :"..path)
+    return path;
     
 end 
 

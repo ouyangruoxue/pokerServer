@@ -133,7 +133,7 @@
               <select data-am-selected="{btnSize: 'sm'}" id="tab1_online_type">
                 <option value="online_now">立即上线</option>
                 <option value="online_settime">定时上线</option>
-				<option value="offline_now">下线</option>
+				<!-- <option value="offline_now">下线</option> -->
               </select>
             </div>
           </div>
@@ -201,7 +201,7 @@
               <select data-am-selected="{btnSize: 'sm'}" id="tab2_online_type">
                 <option value="online_now">立即上线</option>
                 <option value="online_settime">定时上线</option>
-				<option value="offline_now">下线</option>
+				<!-- <option value="offline_now">下线</option> -->
               </select>
             </div>
           </div>
@@ -269,7 +269,7 @@
               <select data-am-selected="{btnSize: 'sm'}" id="tab3_online_type">
                 <option value="online_now">立即上线</option>
                 <option value="online_settime">定时上线</option>
-				<option value="offline_now">下线</option>
+				<!-- <option value="offline_now">下线</option> -->
               </select>
             </div>
            </div>
@@ -338,7 +338,7 @@
 		var anchor_id_fk
 		var context
 		var banner_status
-		var offline_time
+		<!-- var offline_time -->
 		var table_index=obj.parentNode.parentNode.id
 		<!-- 数据库的banner_type 0主播1视频2网页。 页面的顺序 网页，主播，内容-->
 		if("tab1"==table_index){
@@ -350,13 +350,14 @@
 				if("online_settime"==e1){
 					online_time=document.getElementById("tab1_online_time").value
 					banner_status=2
-				}else if("online_now"==e1){
+				}else{
 					online_time=getNowFormatDate()
 					banner_status=1
-				}else{
-					offline_time=getNowFormatDate()
-					banner_status=0
 				}
+				<!-- else{ -->
+					<!-- offline_time=getNowFormatDate() -->
+					<!-- banner_status=0 -->
+				<!-- } -->
 			
 		}else if("tab2"==table_index){
 			 banner_type=0
@@ -367,13 +368,15 @@
 				if("online_settime"==e2){
 					online_time=document.getElementById("tab2_online_time").value
 					banner_status=2
-				}else if("online_now"==e2){
+				<!-- }else if("online_now"==e2){ -->
+				}else{
 					online_time=getNowFormatDate()
 					banner_status=1
-				}else{
-					offline_time=getNowFormatDate()
-					banner_status=0
 				}
+				<!-- else{ -->
+					<!-- offline_time=getNowFormatDate() -->
+					<!-- banner_status=0 -->
+				<!-- } -->
 		}else{
 			var banner_type=1
 			 banner_title=document.getElementById("tab3_title").value
@@ -383,13 +386,15 @@
 				if("online_settime"==e3){
 					online_time=document.getElementById("tab3_online_time").value
 					banner_status=2
-				}else if("online_now"==e3){
+				<!-- }else if("online_now"==e3){ -->
+				}else{
 					online_time=getNowFormatDate()
 					banner_status=1
-				}else{
-					offline_time=getNowFormatDate()
-					banner_status=0
 				}
+				<!-- else{ -->
+					<!-- offline_time=getNowFormatDate() -->
+					<!-- banner_status=0 -->
+				<!-- } -->
 		}
 		var id_pk=document.getElementById("id_pk").value
 		$.ajax({
@@ -403,7 +408,7 @@
 				 "banner_type":banner_type, 
 				 "banner_title":banner_title, 
 				 "online_time":online_time, 
-				 "offline_time":offline_time,
+				 <!-- "offline_time":offline_time, -->
 				 "banner_status":banner_status, 
 				 "url":url, 
 				 "context":context

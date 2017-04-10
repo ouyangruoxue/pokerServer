@@ -1,7 +1,7 @@
 local files_api = require "files.common.file_apis"
 local cjson     = require "cjson"
 local api_data	= require "common.api_data_help"
-local request	= require "common.request_args"
+local request	= require "common.request"
 local uuid 		= require "resty.uuid"
 local resty_sha1 = require "resty.sha1"
 local resty_md5 = require "resty.md5"
@@ -43,6 +43,9 @@ else
 	ngx.log(ngx.ERR,"上传完成  返回结果为-----------"..cjson.encode(res))
     ngx.say(cjson.encode(res)); 
 end
+
+local testdata ;
+
 
 
 
