@@ -37,7 +37,6 @@ local _Chatroom = {
 	game_type = 1,
 	--房间类型
     room_type = 0,
-	roomSamp = nil,
 	--直播状态 1表示直播 0表示未开播
 	anchor_status = 0,
 	--玩家map
@@ -67,7 +66,8 @@ local _Chatroom = {
     isclose = false,
 
     anchorNeteaseRoomId = "",--云信聊天室id
-
+    --牌局最近十局输赢记录
+    ten_game_record = nil,
     -- 扑克牌
     poker = { },
 
@@ -571,6 +571,21 @@ end
 
 end
 
+--发送牌局历史记录
+_Chatroom.game_palyer_win_record = function (premature,_self)
+
+
+  if _self.ten_game_record then
+        local recordtable = {}
+        recordtable.type = 9
+        recordtable.data = {}
+        recordtable.data.game_record = _self.ten_game_record
+        local msgJsonrecord = cjson.encode(recordtable)
+        _self:sendMsg(msgJsonrecord)
+    end
+
+
+end
 --初始化牌局状态
 _Chatroom.prepare = function (premature,_self)
     _self.publicCards = CardSet:new()
@@ -595,6 +610,8 @@ _Chatroom.prepare = function (premature,_self)
     	gamePlayTempMap.cards = CardSet:new()
     end	
     	
+  
+
 
     local statustable = {}
     statustable.type = 8
@@ -617,6 +634,12 @@ _Chatroom.prepare = function (premature,_self)
 
     --5
     local ok, err = ngx.timer.at(5, _self.startBet,_self)
+     if not ok then
+         ngx.log(ngx.ERR, "failed to create timer: ", err)
+         return
+     end
+
+     local ok, err = ngx.timer.at(2, _self.game_palyer_win_record,_self)
      if not ok then
          ngx.log(ngx.ERR, "failed to create timer: ", err)
          return
@@ -702,7 +725,7 @@ _Chatroom.dealCardByGameType = function (premature ,_self)
     else	
     
     end		
-
+    --  发送牌局信息到客户端
     local statustable = {}
     statustable.type = 8
     statustable.data = {}
@@ -713,7 +736,7 @@ _Chatroom.dealCardByGameType = function (premature ,_self)
     local msgJson = cjson.encode(statustable)
     _self:sendMsg(msgJson)
 
-
+    --  发送牌局状态到云信聊天室
      local neteaseMsg = {}
      neteaseMsg.data = {}
     neteaseMsg.data.game_status = 2
@@ -779,6 +802,51 @@ _Chatroom.turnon  = function (premature ,_self)
     else	
     
     end		
+
+    
+    --  判断是否存在
+    if not _self.ten_game_record then
+        _self.ten_game_record = {}
+           -- 比牌
+        for i=2,table.getn(_self.gamePlayMap),1 do
+            local robotTemp = _self.gamePlayMap[i]
+            local robotTempPlayerId = robotTemp["game_player_id"]
+            _self.ten_game_record[tostring(robotTempPlayerId)] = {}
+            _self.ten_game_record[tostring(robotTempPlayerId)]["game_result"]={}
+            table.insert(_self.ten_game_record[tostring(robotTempPlayerId)]["game_result"],_self.gamePlayMap[i].game_result)
+            local wloseresult = tonumber(_self.gamePlayMap[i].game_result)
+            _self.ten_game_record[tostring(robotTempPlayerId)]["win_probability"]= wloseresult/1
+            _self.ten_game_record[tostring(robotTempPlayerId)]["name"] = _self.gamePlayMap[i].name
+        end
+
+    else
+            -- 先进行结果插入再去掉超出部分并计算胜率
+        for i=2,table.getn(_self.gamePlayMap),1 do
+            local robotTemp = _self.gamePlayMap[i]
+            local robotTempPlayerId = robotTemp["game_player_id"]
+            local robotTempPlayerTab = _self.ten_game_record[tostring(robotTempPlayerId)]
+            local robotTempPlayerTabresult =  robotTempPlayerTab["game_result"]
+            table.insert(robotTempPlayerTabresult,_self.gamePlayMap[i].game_result)
+
+            local robotTempTablelength = table.getn(robotTempPlayerTabresult)
+            if robotTempTablelength >10 then
+                table.remove(robotTempPlayerTabresult,1)
+            end    
+            local wloseresult =  table.getn(robotTempPlayerTabresult)
+            local winprocess = 0
+            for i=1,table.getn(robotTempPlayerTabresult) do
+                local value = robotTempPlayerTabresult[i]
+                if tonumber(value) == 1 then
+                    winprocess = winprocess + 1
+                end    
+            end
+            robotTempPlayerTab["win_probability"]= tonumber(winprocess)/tonumber(wloseresult)
+            robotTempPlayerTab["name"] = _self.gamePlayMap[i].name
+        end   
+
+    end    
+    
+
 
     --发送牌局结果到云信聊天室
     
@@ -1075,7 +1143,7 @@ end
 
 math.randomseed(tostring(os.time()):reverse():sub(1, 7))
 function _Chatroom:getCard(seed)
-     math.randomseed(os.clock()*10000)
+     --math.randomseed(os.clock()*10000)
     local index = math.random(1, table.getn(self.poker))
     local card = self.poker[index]
     table.remove(self.poker, index)
@@ -1204,10 +1272,6 @@ function _Chatroom:new(roomId,roomName,anchor_user_code,playerUpLimit,gameType,n
 
     if  neteaseRoomId then
         chatRoom.anchorNeteaseRoomId = neteaseRoomId
-    end    
-
-    if roomPwd then
-        chatRoom.roomPwd = roomPwd
     end    
 
 	local resty_lock = require "resty.lock"  
