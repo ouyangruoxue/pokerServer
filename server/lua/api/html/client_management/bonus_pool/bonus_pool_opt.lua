@@ -15,51 +15,53 @@ local currentRequestArgs = reqArgs.new()
 local args = currentRequestArgs.getArgs()
 
 local user={}
-if args.game_id_fk and args.game_id_fk~="" then 
-	user.game_id_fk=args.game_id_fk
+if args.game_id and args.game_id~="" then 
+	user.id_pk=args.game_id
+	else
+		return "奖金池id为空"
 end
 
--- 这是展示使用的数据 展示游戏类型下对应的奖金池金额
-local dbres,err = userDbOp.getBaseFromSql("SELECT t2.*,t3.game_name FROM t_bonus_pool t2 LEFT JOIN t_game_type t3 ON t2.game_id_fk = t3.id_pk",user,"and")
-
-if not dbres or type(dbres) ~= "table" then 
-		local  result = responeData.new_failed({},err)
+local temp={}
+-- 查询游戏类型
+temp.id_pk=user.id_pk
+local dbres1,err1 = userDbOp.getBaseFromSql("SELECT * FROM t_game_type ",temp,"and")
+if not dbres1 or type(dbres1) ~= "table" then 
+		local  result = responeData.new_failed({},err1)
 		ngx.print(cjson.encode(result))	
 		return 
 end
 
-local user1={}
-local temp = {}
-if args.id_pk and args.id_pk~="" and args.opt_money and args.opt_money~="" then -- 必须要接收奖金池id和操作的金额
-	
-temp.id_pk=args.id_pk
+-- 通过游戏id从redis中查找对应的游戏类型
+local redis = require "redis.zs_redis"
+local red = redis:new()
 
-	if args.opt_money and args.opt_money~="" then 
-	user1.opt_money=args.opt_money
-	end
-local dbres,err = userDbOp.updateBaseFromSql("t_bonus_pool",user1,temp)
-	if not dbres then 
-		local  result = responeData.new_failed({},err)
-		ngx.say(cjson.encode(result))
-		ngx.log(ngx.ERR,"faild to update t_anchor")
-		return 
-	end
-	local  result = responeData.new_success({})
+--[[
+
+此处写死，1表示德州扑克，2表示牛牛，数据库中也要是这样的对应关系，否则redis的奖金池不是数据库对应游戏的奖金池
+
+]]
+local bonus_pool,err
+if "1"==user.id_pk then 
+	 bonus_pool,err =red:get("wj_dzpk_capital_pool")
+		if not bonus_pool then 
+			ngx.log(ngx.ERR,"err1:"..err)
+			return "奖金池为空"
+		end
+
+else
+	bonus_pool,err =red:get("wj_niuniu_capital_pool")
+		if not bonus_pool then 
+			ngx.log(ngx.ERR,"err2:"..err)
+			return "奖金池为空"
+		end
 end
 
--- session必须开启缓存才能够使用，为了便捷开发，先不判断，而是直接跳转到index页面
-
--- if args.token == session.data.token then 
--- 	-- 从登陆跳过来，带了token才能跳转到html/index.html界面
--- 	local address="/html/index.html"
--- 	local model={}
--- 	template.render(address,model)
--- else
--- 	result = responeData.new_failed({},err)
--- end
 local address="/html/client_management/bonus_pool/bonus_pool_opt.html"
-local bonus_pool_opt_data
-bonus_pool_opt_data=dbres
-	local model={bonus_pool_opt_data=bonus_pool_opt_data}
+
+
+local game_type_name
+game_type_name=dbres1
+
+	local model={bonus_pool=bonus_pool,game_type_name=game_type_name}
 
 	template.render(address,model)

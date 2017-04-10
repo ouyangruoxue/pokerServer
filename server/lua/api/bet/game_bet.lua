@@ -120,6 +120,7 @@ local currentBalance = 0
   end 
 --加入房间押注内存中
 local ok =  chat_room:bet(sqlbetArgs)
+ngx.say(cjson.encode(sqlbetArgs))
 if ok ~= 0 then
 --失败的话返回扣除的金额
  local balance ,err = red:get("balance_"..sqlbetArgs.stake_user_code)

@@ -32,10 +32,6 @@ if not args.user_code and args.user_code ~= "" then
 	return	
 end
 
-local caputureAgrs = {}
-caputureAgrs.accid = args.user_code
-
-
 local user ={}
 if args.id_pk and args.id_pk~="" then 
 	user.id_pk=args.id_pk
@@ -47,22 +43,18 @@ end
 
 if args.nickname and args.nickname~="" then 
 	user.nickname=args.nickname
-	caputureAgrs.name = args.nickname
 end 
 
 if args.head_icon and args.head_icon~="" then 
 	user.head_icon=args.head_icon
-	caputureAgrs.icon = args.head_icon
 end 
 
 if args.sex and args.sex~="" then 
 	user.sex=args.sex
-	caputureAgrs.gender = args.sex
 end 
 
 if args.signature and args.signature~="" then 
 	user.signature=args.signature
-	caputureAgrs.sign = args.signature
 end 
 if args.hometown and args.hometown~="" then 
 	user.hometown=args.hometown
@@ -95,24 +87,6 @@ end
 if args.marriage and args.marriage~="" then 
 	user.marriage=args.marriage
 end 
-
-
-			local  captureRes = ngx.location.capture(
-     			'/netease/user/updateUinfo',
-     			 { method = ngx.HTTP_POST,body = ngx.encode_args(caputureAgrs)}
- 			)
-
-		local captureTab = cjson.decode(captureRes.body)
-
- 			if tonumber(captureTab.code) ~= 200 then
-  	 			result = responeData.new_failed(res,zhCn_bundles.set_chatroom_error)
-					ngx.say(cjson.encode(result))
-				return
- 			end
-
-
-
-
 
 local userDbOp = userDb.new()
 local dbres = nil

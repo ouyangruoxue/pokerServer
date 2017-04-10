@@ -14,12 +14,24 @@ local args = currentRequestArgs.getArgs()
 local temp = {}
 
 
-	local userDbOp = userDb.new()
-	local dbres,err = userDbOp.getBaseFromSql("select * from t_gift_type",temp,"and")
-	if not dbres then 
-		local  result = responeData.new_failed({},err)
-		ngx.log(ngx.ERR,"fail to query by database, err:",err)
-		return 
+	-- local userDbOp = userDb.new()
+	-- local dbres,err = userDbOp.getBaseFromSql("select * from t_gift_type",temp,"and")
+	-- if not dbres then 
+	-- 	local  result = responeData.new_failed({},err)
+	-- 	ngx.log(ngx.ERR,"fail to query by database, err:",err)
+	-- 	return 
+	-- end
+
+
+	
+local mysql = require "db.zs_sql"
+sqlstr="select * from t_gift_type ORDER BY gift_value desc limit 1,1"
+local db=mysql:new()
+ db:query("SET NAMES utf8")
+	local res, err, errno, sqlstate = db:query(sqlstr)
+	db:close()
+	if not res then
+		return nil,err
 	end
 
 -- session必须开启缓存才能够使用，为了便捷开发，先不判断，而是直接跳转到index页面
@@ -34,7 +46,7 @@ local temp = {}
 -- end
 local address="/html/client_management/note/note_edit.html"
 local  note_edit_gift_type_data
-note_edit_gift_type_data=dbres
+note_edit_gift_type_data=res
 	local model={note_edit_gift_type_data=note_edit_gift_type_data}
 
 	template.render(address,model)

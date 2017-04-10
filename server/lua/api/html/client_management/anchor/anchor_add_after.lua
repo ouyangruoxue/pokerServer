@@ -61,6 +61,10 @@ end
 if args.signing_time and args.signing_time~="" then
 	anchor_tab.signing_time=args.signing_time
 end
+if args.anchor_show_img and args.anchor_show_img~="" then
+	anchor_tab.anchor_show_img=args.anchor_show_img
+end
+
 
 -- t_user_ext_info
 if args.nickname and args.nickname~="" then
