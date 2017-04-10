@@ -124,6 +124,16 @@
 	// 此处为path的配置，是从html页面跳转到另一个html页面（实际是lua的映射的结果），这样处理是为了后期文件夹路径变更后能统一处理（而不是打开每个文件去找）
 	// 根据功能模块来划分
 	//除了菜单里的是跳转，其他的都返回路劲
+	//登录界面
+	// 跳转到lua登录
+	function login_path(){
+		return getRootPath(1)+"/user/login"
+	} 
+	 // 跳转到home界面
+	function home_path(){
+		return getRootPath(1)+"/html/client_management/home/home"
+	} 
+	
 	// anchor 主播 6+1
 	function sider_anchor_index_path(){
 		window.location.href=getRootPath(2)+"/client_management/anchor/anchor_index"
@@ -176,7 +186,7 @@
 	}
 	 
 	 
-	// bonus_pool 奖金池 2
+	// bonus_pool 奖金池 3+1
 	function sider_bonus_pool_index_path(){
 		window.location.href=getRootPath(2)+"/client_management/bonus_pool/bonus_pool_index"
 	} 
@@ -186,12 +196,13 @@
 	function bonus_pool_opt_path(){
 		return getRootPath(2)+"/client_management/bonus_pool/bonus_pool_opt"
 	} 
-	// 保存奖金池
-	// 删除奖金池
-	// function bonus_delete_path(){
-		// return getRootPath(3)+"/bonus_pool/bonus_pool_save"
-	// } 
-	 
+	function bonus_pool_opt_after_path(){
+		return getRootPath(2)+"/client_management/bonus_pool/bonus_pool_opt_after"
+	} 
+	function bonus_pool_delete_path(){
+		return getRootPath(3)+"/bonus_pool/bonus_pool_history_delete"
+	}
+
 	 
 	 
 	// gift	礼物类型 3+2
